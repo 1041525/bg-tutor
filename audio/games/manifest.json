@@ -1,0 +1,566 @@
+{
+  "мама": {
+    "text": "мама",
+    "file": "mama.mp3"
+  },
+  "syl_ма": {
+    "text": "ма",
+    "file": "syl_ma.mp3"
+  },
+  "баба": {
+    "text": "баба",
+    "file": "baba.mp3"
+  },
+  "syl_ба": {
+    "text": "ба",
+    "file": "syl_ba.mp3"
+  },
+  "тато": {
+    "text": "тато",
+    "file": "tato.mp3"
+  },
+  "syl_та": {
+    "text": "та",
+    "file": "syl_ta.mp3"
+  },
+  "syl_то": {
+    "text": "то",
+    "file": "syl_to.mp3"
+  },
+  "дядо": {
+    "text": "дядо",
+    "file": "dyado.mp3"
+  },
+  "syl_дя": {
+    "text": "дя",
+    "file": "syl_dya.mp3"
+  },
+  "syl_до": {
+    "text": "до",
+    "file": "syl_do.mp3"
+  },
+  "кола": {
+    "text": "кола",
+    "file": "kola.mp3"
+  },
+  "syl_ко": {
+    "text": "ко",
+    "file": "syl_ko.mp3"
+  },
+  "syl_ла": {
+    "text": "ла",
+    "file": "syl_la.mp3"
+  },
+  "вода": {
+    "text": "вода",
+    "file": "voda.mp3"
+  },
+  "syl_во": {
+    "text": "во",
+    "file": "syl_vo.mp3"
+  },
+  "syl_да": {
+    "text": "да",
+    "file": "syl_da.mp3"
+  },
+  "риба": {
+    "text": "риба",
+    "file": "riba.mp3"
+  },
+  "syl_ри": {
+    "text": "ри",
+    "file": "syl_ri.mp3"
+  },
+  "коте": {
+    "text": "коте",
+    "file": "kote.mp3"
+  },
+  "syl_те": {
+    "text": "те",
+    "file": "syl_te.mp3"
+  },
+  "куче": {
+    "text": "куче",
+    "file": "kuche.mp3"
+  },
+  "syl_ку": {
+    "text": "ку",
+    "file": "syl_ku.mp3"
+  },
+  "syl_че": {
+    "text": "че",
+    "file": "syl_che.mp3"
+  },
+  "пиле": {
+    "text": "пиле",
+    "file": "pile.mp3"
+  },
+  "syl_пи": {
+    "text": "пи",
+    "file": "syl_pi.mp3"
+  },
+  "syl_ле": {
+    "text": "ле",
+    "file": "syl_le.mp3"
+  },
+  "слон": {
+    "text": "слон",
+    "file": "slon.mp3"
+  },
+  "syl_слон": {
+    "text": "слон",
+    "file": "syl_slon.mp3"
+  },
+  "мечка": {
+    "text": "мечка",
+    "file": "mechka.mp3"
+  },
+  "syl_меч": {
+    "text": "меч",
+    "file": "syl_mech.mp3"
+  },
+  "syl_ка": {
+    "text": "ка",
+    "file": "syl_ka.mp3"
+  },
+  "лъв": {
+    "text": "лъв",
+    "file": "lav.mp3"
+  },
+  "syl_лъв": {
+    "text": "лъв",
+    "file": "syl_lav.mp3"
+  },
+  "заек": {
+    "text": "заек",
+    "file": "zaek.mp3"
+  },
+  "syl_за": {
+    "text": "за",
+    "file": "syl_za.mp3"
+  },
+  "syl_ек": {
+    "text": "ек",
+    "file": "syl_ek.mp3"
+  },
+  "небе": {
+    "text": "небе",
+    "file": "nebe.mp3"
+  },
+  "syl_не": {
+    "text": "не",
+    "file": "syl_ne.mp3"
+  },
+  "syl_бе": {
+    "text": "бе",
+    "file": "syl_be.mp3"
+  },
+  "слънце": {
+    "text": "слънце",
+    "file": "slantse.mp3"
+  },
+  "syl_слън": {
+    "text": "слън",
+    "file": "syl_slan.mp3"
+  },
+  "syl_це": {
+    "text": "це",
+    "file": "syl_tse.mp3"
+  },
+  "луна": {
+    "text": "луна",
+    "file": "luna.mp3"
+  },
+  "syl_лу": {
+    "text": "лу",
+    "file": "syl_lu.mp3"
+  },
+  "syl_на": {
+    "text": "на",
+    "file": "syl_na.mp3"
+  },
+  "цвете": {
+    "text": "цвете",
+    "file": "tsvete.mp3"
+  },
+  "syl_цве": {
+    "text": "цве",
+    "file": "syl_tsve.mp3"
+  },
+  "ябълка": {
+    "text": "ябълка",
+    "file": "yabalka.mp3"
+  },
+  "syl_ябъл": {
+    "text": "ябъл",
+    "file": "syl_yabal.mp3"
+  },
+  "круша": {
+    "text": "круша",
+    "file": "krusha.mp3"
+  },
+  "syl_кру": {
+    "text": "кру",
+    "file": "syl_kru.mp3"
+  },
+  "syl_ша": {
+    "text": "ша",
+    "file": "syl_sha.mp3"
+  },
+  "банан": {
+    "text": "банан",
+    "file": "banan.mp3"
+  },
+  "syl_нан": {
+    "text": "нан",
+    "file": "syl_nan.mp3"
+  },
+  "диня": {
+    "text": "диня",
+    "file": "dinya.mp3"
+  },
+  "syl_ди": {
+    "text": "ди",
+    "file": "syl_di.mp3"
+  },
+  "syl_ня": {
+    "text": "ня",
+    "file": "syl_nya.mp3"
+  },
+  "торта": {
+    "text": "торта",
+    "file": "torta.mp3"
+  },
+  "syl_тор": {
+    "text": "тор",
+    "file": "syl_tor.mp3"
+  },
+  "сладолед": {
+    "text": "сладолед",
+    "file": "sladoled.mp3"
+  },
+  "syl_сла": {
+    "text": "сла",
+    "file": "syl_sla.mp3"
+  },
+  "syl_лед": {
+    "text": "лед",
+    "file": "syl_led.mp3"
+  },
+  "сок": {
+    "text": "сок",
+    "file": "sok.mp3"
+  },
+  "нос": {
+    "text": "нос",
+    "file": "nos.mp3"
+  },
+  "кон": {
+    "text": "кон",
+    "file": "kon.mp3"
+  },
+  "сол": {
+    "text": "сол",
+    "file": "sol.mp3"
+  },
+  "мед": {
+    "text": "мед",
+    "file": "med.mp3"
+  },
+  "дом": {
+    "text": "дом",
+    "file": "dom.mp3"
+  },
+  "сир": {
+    "text": "сир",
+    "file": "sir.mp3"
+  },
+  "рак": {
+    "text": "рак",
+    "file": "rak.mp3"
+  },
+  "кот": {
+    "text": "кот",
+    "file": "kot.mp3"
+  },
+  "пес": {
+    "text": "пес",
+    "file": "pes.mp3"
+  },
+  "мак": {
+    "text": "мак",
+    "file": "mak.mp3"
+  },
+  "зъб": {
+    "text": "зъб",
+    "file": "zab.mp3"
+  },
+  "нож": {
+    "text": "нож",
+    "file": "nozh.mp3"
+  },
+  "миш": {
+    "text": "миш",
+    "file": "mish.mp3"
+  },
+  "дар": {
+    "text": "дар",
+    "file": "dar.mp3"
+  },
+  "чай": {
+    "text": "чай",
+    "file": "chay.mp3"
+  },
+  "маса": {
+    "text": "маса",
+    "file": "masa.mp3"
+  },
+  "syl_са": {
+    "text": "са",
+    "file": "syl_sa.mp3"
+  },
+  "гъба": {
+    "text": "гъба",
+    "file": "gaba.mp3"
+  },
+  "syl_гъ": {
+    "text": "гъ",
+    "file": "syl_ga.mp3"
+  },
+  "къща": {
+    "text": "къща",
+    "file": "kashta.mp3"
+  },
+  "syl_къ": {
+    "text": "къ",
+    "file": "syl_ka.mp3"
+  },
+  "syl_ща": {
+    "text": "ща",
+    "file": "syl_shta.mp3"
+  },
+  "ягода": {
+    "text": "ягода",
+    "file": "yagoda.mp3"
+  },
+  "syl_яго": {
+    "text": "яго",
+    "file": "syl_yago.mp3"
+  },
+  "пчела": {
+    "text": "пчела",
+    "file": "pchela.mp3"
+  },
+  "syl_пче": {
+    "text": "пче",
+    "file": "syl_pche.mp3"
+  },
+  "letter_А": {
+    "text": "а, а, а",
+    "file": "letter_a.mp3"
+  },
+  "letter_Б": {
+    "text": "бъ",
+    "file": "letter_b.mp3"
+  },
+  "letter_В": {
+    "text": "въ",
+    "file": "letter_v.mp3"
+  },
+  "letter_Г": {
+    "text": "гъ",
+    "file": "letter_g.mp3"
+  },
+  "letter_Д": {
+    "text": "дъ",
+    "file": "letter_d.mp3"
+  },
+  "letter_Е": {
+    "text": "е, е, е",
+    "file": "letter_e.mp3"
+  },
+  "letter_Ж": {
+    "text": "жъ",
+    "file": "letter_zh.mp3"
+  },
+  "letter_З": {
+    "text": "зъ",
+    "file": "letter_z.mp3"
+  },
+  "letter_И": {
+    "text": "и, и, и",
+    "file": "letter_i.mp3"
+  },
+  "letter_Й": {
+    "text": "й, кратко и",
+    "file": "letter_y.mp3"
+  },
+  "letter_К": {
+    "text": "къ",
+    "file": "letter_k.mp3"
+  },
+  "letter_Л": {
+    "text": "лъ",
+    "file": "letter_l.mp3"
+  },
+  "letter_М": {
+    "text": "мъ",
+    "file": "letter_m.mp3"
+  },
+  "letter_Н": {
+    "text": "нъ",
+    "file": "letter_n.mp3"
+  },
+  "letter_О": {
+    "text": "о, о, о",
+    "file": "letter_o.mp3"
+  },
+  "letter_П": {
+    "text": "пъ",
+    "file": "letter_p.mp3"
+  },
+  "letter_Р": {
+    "text": "ръ",
+    "file": "letter_r.mp3"
+  },
+  "letter_С": {
+    "text": "съ",
+    "file": "letter_s.mp3"
+  },
+  "letter_Т": {
+    "text": "тъ",
+    "file": "letter_t.mp3"
+  },
+  "letter_У": {
+    "text": "у, у, у",
+    "file": "letter_u.mp3"
+  },
+  "letter_Ф": {
+    "text": "фъ",
+    "file": "letter_f.mp3"
+  },
+  "letter_Х": {
+    "text": "хъ",
+    "file": "letter_h.mp3"
+  },
+  "letter_Ц": {
+    "text": "цъ",
+    "file": "letter_ts.mp3"
+  },
+  "letter_Ч": {
+    "text": "чъ",
+    "file": "letter_ch.mp3"
+  },
+  "letter_Ш": {
+    "text": "шъ",
+    "file": "letter_sh.mp3"
+  },
+  "letter_Щ": {
+    "text": "щъ",
+    "file": "letter_sht.mp3"
+  },
+  "letter_Ъ": {
+    "text": "ъ, ъ, ъ",
+    "file": "letter_a.mp3"
+  },
+  "letter_Ь": {
+    "text": "ер малък",
+    "file": "letter_y.mp3"
+  },
+  "letter_Ю": {
+    "text": "ю, ю, ю",
+    "file": "letter_yu.mp3"
+  },
+  "letter_Я": {
+    "text": "я, я, я",
+    "file": "letter_ya.mp3"
+  },
+  "phrase_glasna": {
+    "text": "гласна",
+    "file": "phrase_glasna.mp3"
+  },
+  "phrase_saglasna": {
+    "text": "съгласна",
+    "file": "phrase_saglasna.mp3"
+  },
+  "phrase_postroy-dumata": {
+    "text": "Построй думата от срички!",
+    "file": "phrase_postroydumata.mp3"
+  },
+  "phrase_saberi-dumata": {
+    "text": "Събери думата!",
+    "file": "phrase_saberidumata.mp3"
+  },
+  "phrase_sortiray": {
+    "text": "Сортирай буквите!",
+    "file": "phrase_sortiray.mp3"
+  },
+  "phrase_svarzhi": {
+    "text": "Свържи половинките!",
+    "file": "phrase_svarzhi.mp3"
+  },
+  "game_game-zvukov-mach": {
+    "text": "Звуков мач",
+    "file": "game_gamezvukovmach.mp3"
+  },
+  "game_game-zvukov-mach-instr": {
+    "text": "Намери думата по звук!",
+    "file": "game_gamezvukovmachinstr.mp3"
+  },
+  "game_game-nameri-kartinkata": {
+    "text": "Намери картинката",
+    "file": "game_gamenamerikartinkata.mp3"
+  },
+  "game_game-nameri-kartinkata-instr": {
+    "text": "Свържи думата с картинката!",
+    "file": "game_gamenamerikartinkatainstr.mp3"
+  },
+  "game_game-spukay-balona": {
+    "text": "Спукай балона",
+    "file": "game_gamespukaybalona.mp3"
+  },
+  "game_game-spukay-balona-instr": {
+    "text": "Намери правилната буква!",
+    "file": "game_gamespukaybalonainstr.mp3"
+  },
+  "game_game-svarzhi-bukvite": {
+    "text": "Свържи буквите",
+    "file": "game_gamesvarzhibukvite.mp3"
+  },
+  "game_game-svarzhi-bukvite-instr": {
+    "text": "Свържи голяма към малка буква!",
+    "file": "game_gamesvarzhibukviteinstr.mp3"
+  },
+  "game_game-zvukov-vlak": {
+    "text": "Звуков влак",
+    "file": "game_gamezvukovvlak.mp3"
+  },
+  "game_game-zvukov-vlak-instr": {
+    "text": "Построй думата от срички!",
+    "file": "game_gamezvukovvlakinstr.mp3"
+  },
+  "game_game-saberi-dumata": {
+    "text": "Събери думата",
+    "file": "game_gamesaberidumata.mp3"
+  },
+  "game_game-saberi-dumata-instr": {
+    "text": "Подреди буквите правилно!",
+    "file": "game_gamesaberidumatainstr.mp3"
+  },
+  "game_game-glasni-saglasni": {
+    "text": "Гласни и съгласни",
+    "file": "game_gameglasnisaglasni.mp3"
+  },
+  "game_game-glasni-saglasni-instr": {
+    "text": "Сортирай буквите!",
+    "file": "game_gameglasnisaglasniinstr.mp3"
+  },
+  "game_game-sricki-pazel": {
+    "text": "Срички пъзел",
+    "file": "game_gamesrickipazel.mp3"
+  },
+  "game_game-sricki-pazel-instr": {
+    "text": "Свържи половинките!",
+    "file": "game_gamesrickipazelinstr.mp3"
+  }
+}

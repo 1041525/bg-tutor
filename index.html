@@ -1,0 +1,4509 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Звуков мач - Bulgarian Phonics</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Inline CSS preserved as fallback - see css/styles.css for extracted version */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #87CEEB 0%, #FFB6C1 50%, #DDA0DD 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+      position: relative;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Welcome Screen */
+    .welcome-title {
+      font-size: 2.5rem;
+      color: #fff;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .welcome-subtitle {
+      font-size: 1.2rem;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      margin-bottom: 40px;
+    }
+
+    .play-btn {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #4CAF50, #45a049);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .play-btn:hover, .play-btn:active {
+      transform: scale(1.05);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+    }
+
+    .play-btn svg {
+      width: 60px;
+      height: 60px;
+      fill: white;
+      margin-left: 10px;
+    }
+
+    /* Game Selection Menu */
+    .game-menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 340px;
+      padding: 0 10px;
+    }
+
+    .game-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.95);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+    }
+
+    .game-link:hover, .game-link:active {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    }
+
+    .game-link-icon {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .game-link-icon.phonics {
+      background: linear-gradient(145deg, #4ECDC4, #45b7aa);
+    }
+
+    .game-link-icon.vocab {
+      background: linear-gradient(145deg, #FF6B6B, #ee5a5a);
+    }
+
+    .game-link-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .game-link-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .game-link-desc {
+      display: none;
+    }
+
+    /* Letter Selection */
+    .letter-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .letter-btn {
+      width: 100px;
+      height: 100px;
+      border-radius: 20px;
+      border: none;
+      font-size: 3rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .letter-btn:nth-child(1) { background: linear-gradient(145deg, #FF6B6B, #ee5a5a); color: white; }
+    .letter-btn:nth-child(2) { background: linear-gradient(145deg, #4ECDC4, #45b7aa); color: white; }
+    .letter-btn:nth-child(3) { background: linear-gradient(145deg, #FFE66D, #f5dc63); color: #333; }
+    .letter-btn:nth-child(4) { background: linear-gradient(145deg, #95E1D3, #86d4c5); color: #333; }
+    .letter-btn:nth-child(5) { background: linear-gradient(145deg, #F38181, #e67373); color: white; }
+    .letter-btn:nth-child(6) { background: linear-gradient(145deg, #AA96DA, #9d89cf); color: white; }
+
+    .letter-btn:hover, .letter-btn:active {
+      transform: scale(1.08);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .letter-stars {
+      position: absolute;
+      bottom: 5px;
+      font-size: 0.8rem;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    /* Game Screen */
+    .game-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sound-display {
+      font-size: 5rem;
+      color: white;
+      text-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .speaker-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      border: none;
+      cursor: pointer;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .speaker-btn svg {
+      width: 30px;
+      height: 30px;
+      fill: white;
+    }
+
+    .pictures-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .picture-btn {
+      width: 140px;
+      height: 140px;
+      border-radius: 25px;
+      background: white;
+      border: 4px solid transparent;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.3s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      font-size: 5rem;
+    }
+
+    .picture-btn:hover:not(.dimmed) {
+      transform: scale(1.05);
+      border-color: #FFD700;
+    }
+
+    .picture-btn.dimmed {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .picture-btn.correct {
+      animation: celebrate 0.5s ease;
+      border-color: #4CAF50;
+    }
+
+    @keyframes celebrate {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.15) rotate(-5deg); }
+      50% { transform: scale(1.2); }
+      75% { transform: scale(1.15) rotate(5deg); }
+    }
+
+    .round-indicator {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .round-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+    }
+
+    .round-dot.completed {
+      background: #4CAF50;
+    }
+
+    .round-dot.current {
+      background: white;
+      box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    }
+
+    /* Results Screen */
+    .results-container {
+      text-align: center;
+    }
+
+    .results-letter {
+      font-size: 4rem;
+      color: white;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+    }
+
+    .stars-display {
+      font-size: 4rem;
+      margin-bottom: 30px;
+      animation: bounceIn 0.5s ease;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .continue-btn {
+      padding: 20px 60px;
+      font-size: 1.5rem;
+      border-radius: 50px;
+      background: linear-gradient(145deg, #4CAF50, #45a049);
+      color: white;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    .continue-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Loading Screen */
+    .loading {
+      font-size: 2rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Settings Button */
+    .settings-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
+    }
+
+    /* Settings Screen */
+    .settings-container {
+      width: 100%;
+      max-width: 350px;
+    }
+
+    .setting-item {
+      background: rgba(255,255,255,0.9);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .setting-label {
+      font-size: 1.1rem;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .setting-sublabel {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    /* Toggle Switch */
+    .toggle {
+      width: 60px;
+      height: 32px;
+      background: #ccc;
+      border-radius: 16px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle.active {
+      background: #4CAF50;
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.3s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .toggle.active::after {
+      transform: translateX(28px);
+    }
+
+    /* Number Selector */
+    .number-selector {
+      display: flex;
+      gap: 8px;
+    }
+
+    .number-option {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      background: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .number-option.active {
+      background: #4CAF50;
+      border-color: #4CAF50;
+      color: white;
+    }
+
+    /* Picture button with label */
+    .picture-btn-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .picture-btn-wrapper.dimmed {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .picture-label {
+      font-size: 1rem;
+      color: #333;
+      font-weight: 500;
+      background: rgba(255,255,255,0.9);
+      padding: 4px 12px;
+      border-radius: 10px;
+    }
+
+    /* Adjust grid for more options */
+    .pictures-grid.grid-3 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pictures-grid.grid-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pictures-grid.grid-6 {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .pictures-grid.grid-6 .picture-btn {
+      width: 100px;
+      height: 100px;
+      font-size: 3.5rem;
+    }
+
+    /* Audio Preview Button */
+    .audio-preview-btn {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #4ECDC4, #45b7aa);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s, background 0.2s;
+      z-index: 10;
+    }
+
+    .audio-preview-btn:hover {
+      transform: scale(1.1);
+      background: linear-gradient(145deg, #5DE0D7, #4ECDC4);
+    }
+
+    .audio-preview-btn:active {
+      transform: scale(0.95);
+    }
+
+    .audio-preview-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+    }
+
+    .audio-preview-btn.playing {
+      animation: pulse-audio 0.6s ease infinite;
+    }
+
+    @keyframes pulse-audio {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .picture-btn {
+      position: relative;
+    }
+
+    .pictures-grid.grid-6 .audio-preview-btn {
+      width: 28px;
+      height: 28px;
+      bottom: 5px;
+      right: 5px;
+    }
+
+    .pictures-grid.grid-6 .audio-preview-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Settings Groups */
+    .settings-group {
+      margin-bottom: 25px;
+    }
+
+    .settings-group-header {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.9);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      padding-left: 5px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+
+    /* Settings Preview */
+    .setting-preview {
+      display: flex;
+      justify-content: center;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .preview-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preview-emoji {
+      width: 60px;
+      height: 60px;
+      background: #f5f5f5;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .preview-label {
+      font-size: 0.85rem;
+      color: #333;
+      font-weight: 500;
+      background: #e8e8e8;
+      padding: 3px 10px;
+      border-radius: 8px;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .preview-label.hidden {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+
+    /* Reset Button */
+    .reset-btn {
+      width: 100%;
+      padding: 15px;
+      font-size: 1rem;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 10px;
+    }
+
+    .reset-btn:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    .reset-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Vocabulary Game Styles */
+    .vocab-word-display {
+      font-size: 2.5rem;
+      color: white;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+      margin-bottom: 10px;
+      padding: 15px 30px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    .vocab-speaker {
+      margin-bottom: 25px;
+    }
+
+    .vocab-results-title {
+      font-size: 1.8rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      margin-bottom: 15px;
+    }
+
+    /* Sticker Book Styles */
+    .sticker-book-container {
+      width: 100%;
+      max-width: 400px;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .sticker-book-stats {
+      background: rgba(255,255,255,0.2);
+      padding: 10px 20px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .sticker-category {
+      margin-bottom: 20px;
+    }
+
+    .sticker-category-header {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.9);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      padding-left: 5px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .sticker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .sticker-item {
+      width: 70px;
+      height: 70px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .sticker-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+
+    .sticker-item.locked {
+      background: rgba(200,200,200,0.5);
+      filter: grayscale(100%);
+      opacity: 0.5;
+    }
+
+    .sticker-item.locked::after {
+      content: '🔒';
+      position: absolute;
+      font-size: 1.2rem;
+      bottom: 2px;
+      right: 2px;
+    }
+
+    .sticker-item.new::before {
+      content: 'НОВ!';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #FF6B6B;
+      color: white;
+      font-size: 0.6rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 8px;
+      animation: pulse 1s infinite;
+    }
+
+    .sticker-tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 100;
+      margin-bottom: 5px;
+    }
+
+    .sticker-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: rgba(0,0,0,0.85);
+    }
+
+    .sticker-item:hover .sticker-tooltip {
+      opacity: 1;
+    }
+
+    /* Welcome Top Section - Sticker Album */
+    .welcome-top-section {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    /* Sticker Album Button */
+    .sticker-album-btn {
+      width: 60px;
+      height: 70px;
+      border-radius: 15px;
+      background: linear-gradient(145deg, #FFD700, #FFA500);
+      border: 3px solid #2D2D2D;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      margin-top: 40px;
+    }
+
+    .sticker-album-btn:hover, .sticker-album-btn:active {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    .sticker-album-icon {
+      font-size: 2rem;
+    }
+
+    .sticker-album-badge {
+      background: #FF6B6B;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 8px;
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      border: 2px solid white;
+    }
+
+    /* New Sticker Notification */
+    .sticker-notification {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .sticker-notification.hidden {
+      display: none;
+    }
+
+    .sticker-notification-content {
+      background: white;
+      border-radius: 25px;
+      padding: 30px 40px;
+      text-align: center;
+      max-width: 300px;
+      animation: bounceIn 0.5s ease;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .sticker-notification-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .sticker-notification-emoji {
+      font-size: 5rem;
+      margin-bottom: 15px;
+      animation: celebrate 0.5s ease infinite alternate;
+    }
+
+    .sticker-notification-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .sticker-notification-desc {
+      font-size: 0.95rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .sticker-notification-btn {
+      padding: 12px 40px;
+      font-size: 1.2rem;
+      border-radius: 25px;
+      background: linear-gradient(145deg, #4CAF50, #45a049);
+      color: white;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+
+    .sticker-notification-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* ===================== */
+    /* BUBBLE POP GAME STYLES */
+    /* ===================== */
+    .game-link-icon.bubble-game {
+      background: linear-gradient(145deg, #9B59B6, #8E44AD);
+    }
+
+    .game-link-icon.dragdrop {
+      background: linear-gradient(145deg, #3498DB, #2980B9);
+    }
+
+    .bubble-target {
+      font-size: 1.3rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 15px;
+      padding: 10px 25px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      text-align: center;
+    }
+
+    .bubble-target-letter {
+      font-size: 2.5rem;
+      font-weight: bold;
+      display: block;
+      margin-top: 5px;
+    }
+
+    .bubble-game-container {
+      width: 100%;
+      height: 380px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      background: linear-gradient(180deg, rgba(135,206,250,0.2) 0%, rgba(255,255,255,0.1) 100%);
+      margin-bottom: 15px;
+    }
+
+    .bubble {
+      position: absolute;
+      width: 70px;
+      height: 85px;
+      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 10px;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.1s;
+      box-shadow:
+        inset -8px -8px 20px rgba(0,0,0,0.15),
+        inset 15px 15px 30px rgba(255,255,255,0.5),
+        0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    /* Balloon highlight/shine */
+    .bubble::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 25px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      top: 12px;
+      left: 12px;
+      filter: blur(3px);
+    }
+
+    /* Balloon knot and string */
+    .bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 10px solid currentColor;
+      filter: brightness(0.7);
+      box-shadow:
+        0 8px 0 0 rgba(120,120,120,0.7),
+        1px 16px 0 0 rgba(120,120,120,0.6),
+        -1px 24px 0 0 rgba(120,120,120,0.5);
+    }
+
+    .bubble:hover {
+      transform: scale(1.1);
+    }
+
+    .bubble.color-1 {
+      background: radial-gradient(circle at 30% 30%, #ff9a9a, #FF6B6B 40%, #cc4444);
+      color: white;
+    }
+    .bubble.color-2 {
+      background: radial-gradient(circle at 30% 30%, #7eeee6, #4ECDC4 40%, #35a89f);
+      color: white;
+    }
+    .bubble.color-3 {
+      background: radial-gradient(circle at 30% 30%, #fff4a3, #FFE66D 40%, #e6c93d);
+      color: #333;
+    }
+    .bubble.color-4 {
+      background: radial-gradient(circle at 30% 30%, #b8f5eb, #95E1D3 40%, #6bc4b3);
+      color: #333;
+    }
+    .bubble.color-5 {
+      background: radial-gradient(circle at 30% 30%, #c9b8f0, #AA96DA 40%, #8b73c4);
+      color: white;
+    }
+    .bubble.color-6 {
+      background: radial-gradient(circle at 30% 30%, #ffb3b3, #F38181 40%, #d45a5a);
+      color: white;
+    }
+
+    .bubble.floating {
+      animation: balloonFloat 3s ease-in-out infinite, balloonDrift 5s ease-in-out infinite;
+    }
+
+    @keyframes balloonFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-20px) rotate(3deg); }
+    }
+
+    @keyframes balloonDrift {
+      0%, 100% { margin-left: 0; }
+      25% { margin-left: 15px; }
+      75% { margin-left: -15px; }
+    }
+
+    .bubble.popping {
+      animation: pop 0.3s ease-out forwards;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.5; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    .bubble.wrong {
+      animation: bubbleShake 0.4s ease-out;
+    }
+
+    @keyframes bubbleShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px) rotate(-5deg); }
+      40% { transform: translateX(8px) rotate(5deg); }
+      60% { transform: translateX(-8px) rotate(-5deg); }
+      80% { transform: translateX(8px) rotate(5deg); }
+    }
+
+    .bubble-score {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .bubble-score-item {
+      background: rgba(255,255,255,0.9);
+      padding: 8px 15px;
+      border-radius: 15px;
+      font-weight: 500;
+      color: #333;
+      font-size: 0.95rem;
+    }
+
+    /* ===================== */
+    /* DRAG & DROP GAME STYLES */
+    /* ===================== */
+    .dragdrop-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      align-items: center;
+    }
+
+    .dragdrop-instruction {
+      font-size: 1.2rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      text-align: center;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 15px;
+    }
+
+    .dragdrop-section {
+      width: 100%;
+    }
+
+    .dragdrop-section-label {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .dragdrop-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .draggable-letter {
+      width: 60px;
+      height: 60px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: grab;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      user-select: none;
+      touch-action: none;
+    }
+
+    .draggable-letter:active {
+      cursor: grabbing;
+    }
+
+    .draggable-letter.dragging {
+      opacity: 0.9;
+      transform: scale(1.15);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      z-index: 100;
+    }
+
+    .draggable-letter.matched {
+      opacity: 0.3;
+      pointer-events: none;
+      transform: scale(0.85);
+    }
+
+    .draggable-letter.selected {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 8px 25px rgba(0,0,0,0.3);
+      border: 3px solid #FFD700;
+    }
+
+    .draggable-letter.uppercase {
+      background: linear-gradient(145deg, #3498DB, #2980B9);
+      color: white;
+    }
+
+    .drop-zone {
+      width: 60px;
+      height: 60px;
+      border-radius: 15px;
+      border: 3px dashed rgba(255,255,255,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+      background: rgba(231, 76, 60, 0.3);
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .drop-zone.highlight {
+      border-color: #FFD700;
+      background: rgba(255,215,0,0.3);
+      transform: scale(1.08);
+    }
+
+    .drop-zone.correct {
+      border-color: #4CAF50;
+      border-style: solid;
+      background: rgba(76,175,80,0.4);
+      animation: celebrate 0.5s ease;
+    }
+
+    .drop-zone.wrong {
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .drop-zone.matched {
+      border-style: solid;
+      border-color: #4CAF50;
+      background: rgba(76,175,80,0.3);
+    }
+
+    .dragdrop-divider {
+      width: 80%;
+      height: 2px;
+      background: rgba(255,255,255,0.3);
+      margin: 5px auto;
+    }
+
+    /* ===================== */
+    /* SOUND TRAIN GAME */
+    /* ===================== */
+    .train-game-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .train-instruction {
+      font-size: 1.3rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .train-target-word {
+      font-size: 2rem;
+      color: white;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+      background: rgba(255,255,255,0.2);
+      padding: 15px 30px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .train-target-word:hover {
+      transform: scale(1.05);
+    }
+
+    .train-track {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 20px;
+      background: rgba(139, 69, 19, 0.6);
+      border-radius: 15px;
+      min-height: 100px;
+      min-width: 280px;
+      position: relative;
+    }
+
+    .train-track::after {
+      content: '';
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      height: 8px;
+      background: linear-gradient(90deg, #654321, #8B4513, #654321);
+      border-radius: 4px;
+    }
+
+    .train-slot {
+      width: 70px;
+      height: 70px;
+      border: 3px dashed rgba(255,255,255,0.5);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      background: rgba(255,255,255,0.1);
+      transition: all 0.2s;
+      z-index: 1;
+    }
+
+    .train-slot.filled {
+      border-style: solid;
+      border-color: #4CAF50;
+      background: rgba(76,175,80,0.3);
+    }
+
+    .train-slot.highlight {
+      border-color: #FFD700;
+      background: rgba(255,215,0,0.3);
+      transform: scale(1.05);
+    }
+
+    .syllable-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .syllable-card {
+      width: 80px;
+      height: 60px;
+      background: linear-gradient(145deg, #E74C3C, #C0392B);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s, opacity 0.3s;
+      border: none;
+    }
+
+    .syllable-card:hover:not(.used) {
+      transform: scale(1.08);
+    }
+
+    .syllable-card.used {
+      opacity: 0.3;
+      pointer-events: none;
+      transform: scale(0.9);
+    }
+
+    .syllable-card.correct {
+      animation: celebrate 0.5s ease;
+    }
+
+    .syllable-card.wrong {
+      animation: shake 0.3s ease;
+    }
+
+    /* ===================== */
+    /* BUILD THE WORD GAME */
+    /* ===================== */
+    .build-word-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .build-word-image {
+      font-size: 5rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .build-word-image:hover {
+      transform: scale(1.1);
+    }
+
+    .build-word-slots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 15px 0;
+    }
+
+    .letter-slot {
+      width: 50px;
+      height: 60px;
+      border: 3px dashed rgba(255,255,255,0.5);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+      background: rgba(255,255,255,0.1);
+      transition: all 0.2s;
+    }
+
+    .letter-slot.filled {
+      border-style: solid;
+      border-color: #4CAF50;
+      background: rgba(76,175,80,0.3);
+    }
+
+    .letter-slot.highlight {
+      border-color: #FFD700;
+      background: rgba(255,215,0,0.3);
+      transform: scale(1.05);
+    }
+
+    .letter-slot.wrong {
+      animation: shake 0.3s ease;
+      border-color: #E74C3C;
+    }
+
+    .letter-choices {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      max-width: 320px;
+    }
+
+    .letter-choice {
+      width: 55px;
+      height: 55px;
+      background: linear-gradient(145deg, #9B59B6, #8E44AD);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s, opacity 0.3s;
+      border: none;
+    }
+
+    .letter-choice:hover:not(.used) {
+      transform: scale(1.1);
+    }
+
+    .letter-choice.used {
+      opacity: 0.3;
+      pointer-events: none;
+      transform: scale(0.85);
+    }
+
+    .letter-choice.correct {
+      animation: celebrate 0.5s ease;
+    }
+
+    /* ===================== */
+    /* VOWELS VS CONSONANTS */
+    /* ===================== */
+    .sorting-game-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .sorting-instruction {
+      font-size: 1.2rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .sorting-zones {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .sorting-zone {
+      flex: 1;
+      max-width: 150px;
+      min-height: 200px;
+      border-radius: 20px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sorting-zone.vowels {
+      background: linear-gradient(145deg, rgba(231, 76, 60, 0.4), rgba(192, 57, 43, 0.4));
+      border: 3px solid rgba(231, 76, 60, 0.7);
+    }
+
+    .sorting-zone.consonants {
+      background: linear-gradient(145deg, rgba(52, 152, 219, 0.4), rgba(41, 128, 185, 0.4));
+      border: 3px solid rgba(52, 152, 219, 0.7);
+    }
+
+    .sorting-zone.highlight {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+
+    .sorting-zone-label {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .sorting-zone-letters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px;
+      min-height: 40px;
+    }
+
+    .sorted-letter {
+      width: 35px;
+      height: 35px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: white;
+      animation: popIn 0.3s ease;
+    }
+
+    .sorted-letter.vowel {
+      background: linear-gradient(145deg, #E74C3C, #C0392B);
+    }
+
+    .sorted-letter.consonant {
+      background: linear-gradient(145deg, #3498DB, #2980B9);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); }
+      70% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .sorting-letter-pool {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+      max-width: 320px;
+    }
+
+    .sorting-letter {
+      width: 55px;
+      height: 55px;
+      background: linear-gradient(145deg, #2ECC71, #27AE60);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+      border: none;
+    }
+
+    .sorting-letter:hover:not(.sorted) {
+      transform: scale(1.1);
+    }
+
+    .sorting-letter.sorted {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0);
+    }
+
+    .sorting-letter.wrong {
+      animation: shake 0.3s ease;
+    }
+
+    .sorting-score {
+      display: flex;
+      gap: 20px;
+      font-size: 1rem;
+      color: white;
+    }
+
+    /* ===================== */
+    /* SYLLABLE PUZZLE GAME */
+    /* ===================== */
+    .puzzle-game-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .puzzle-instruction {
+      font-size: 1.2rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .puzzle-target-image {
+      font-size: 4rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .puzzle-target-image:hover {
+      transform: scale(1.1);
+    }
+
+    .puzzle-word-display {
+      font-size: 1.8rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      background: rgba(255,255,255,0.2);
+      padding: 10px 25px;
+      border-radius: 15px;
+      display: flex;
+      gap: 5px;
+    }
+
+    .puzzle-syllable-slot {
+      padding: 5px 15px;
+      border: 2px dashed rgba(255,255,255,0.5);
+      border-radius: 10px;
+      min-width: 50px;
+      transition: all 0.2s;
+    }
+
+    .puzzle-syllable-slot.filled {
+      border-style: solid;
+      border-color: #4CAF50;
+      background: rgba(76,175,80,0.3);
+    }
+
+    .puzzle-columns {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .puzzle-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .puzzle-column-label {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 5px;
+    }
+
+    .puzzle-syllable {
+      width: 80px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s, opacity 0.3s;
+      border: none;
+    }
+
+    .puzzle-syllable.first-half {
+      background: linear-gradient(145deg, #E67E22, #D35400);
+    }
+
+    .puzzle-syllable.second-half {
+      background: linear-gradient(145deg, #16A085, #1ABC9C);
+    }
+
+    .puzzle-syllable:hover:not(.used):not(.selected) {
+      transform: scale(1.08);
+    }
+
+    .puzzle-syllable.selected {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 4px 15px rgba(0,0,0,0.2);
+      border: 3px solid #FFD700;
+    }
+
+    .puzzle-syllable.used {
+      opacity: 0.3;
+      pointer-events: none;
+      transform: scale(0.9);
+    }
+
+    .puzzle-syllable.correct {
+      animation: celebrate 0.5s ease;
+    }
+
+    .puzzle-syllable.wrong {
+      animation: shake 0.3s ease;
+    }
+
+    /* Game link icons for new games */
+    .game-link-icon.train {
+      background: linear-gradient(145deg, #8B4513, #654321);
+    }
+
+    .game-link-icon.build {
+      background: linear-gradient(145deg, #9B59B6, #8E44AD);
+    }
+
+    .game-link-icon.sort {
+      background: linear-gradient(145deg, #2ECC71, #27AE60);
+    }
+
+    .game-link-icon.puzzle {
+      background: linear-gradient(145deg, #E67E22, #D35400);
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="screen active">
+    <div class="loading">Зареждане...</div>
+  </div>
+
+  <!-- Welcome Screen -->
+  <div id="welcome-screen" class="screen">
+    <!-- Sticker Book Button -->
+    <div class="welcome-top-section">
+      <button class="sticker-album-btn" onclick="showStickerBook()">
+        <span class="sticker-album-icon">📒</span>
+        <span class="sticker-album-badge" id="sticker-count-badge">0</span>
+      </button>
+    </div>
+
+    <h1 class="welcome-title">Учи с мен!</h1>
+
+    <div class="game-menu">
+      <button class="game-link" onclick="showLetterSelection()">
+        <div class="game-link-icon phonics">🔊</div>
+        <div class="game-link-text">
+          <span class="game-link-title">Звуков мач</span>
+          <span class="game-link-desc">Намери думата по звук</span>
+        </div>
+      </button>
+      <button class="game-link" onclick="showVocabGame()">
+        <div class="game-link-icon vocab">🖼️</div>
+        <div class="game-link-text">
+          <span class="game-link-title">Намери картинката</span>
+          <span class="game-link-desc">Свържи думата с картинката</span>
+        </div>
+      </button>
+      <button class="game-link" onclick="showBubbleGame()">
+        <div class="game-link-icon bubble-game">🎈</div>
+        <div class="game-link-text">
+          <span class="game-link-title">Спукай балона</span>
+          <span class="game-link-desc">Намери правилната буква</span>
+        </div>
+      </button>
+      <button class="game-link" onclick="showDragDropGame()">
+        <div class="game-link-icon dragdrop">🔤</div>
+        <div class="game-link-text">
+          <span class="game-link-title">Свържи буквите</span>
+          <span class="game-link-desc">Голяма към малка буква</span>
+        </div>
+      </button>
+      <button class="game-link" onclick="showTrainGame()">
+        <div class="game-link-icon train">🚂</div>
+        <div class="game-link-text">
+          <span class="game-link-title">Звуков влак</span>
+          <span class="game-link-desc">Построй думата от срички</span>
+        </div>
+      </button>
+      <button class="game-link" onclick="showBuildWordGame()">
+        <div class="game-link-icon build">🔠</div>
+        <div class="game-link-text">
+          <span class="game-link-title">Събери думата</span>
+          <span class="game-link-desc">Подреди буквите правилно</span>
+        </div>
+      </button>
+      <button class="game-link" onclick="showSortingGame()">
+        <div class="game-link-icon sort">🎯</div>
+        <div class="game-link-text">
+          <span class="game-link-title">Гласни и съгласни</span>
+          <span class="game-link-desc">Сортирай буквите</span>
+        </div>
+      </button>
+      <button class="game-link" onclick="showPuzzleGame()">
+        <div class="game-link-icon puzzle">🧩</div>
+        <div class="game-link-text">
+          <span class="game-link-title">Срички пъзел</span>
+          <span class="game-link-desc">Свържи половинките</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Settings Screen -->
+  <div id="settings-screen" class="screen">
+    <button class="back-btn" onclick="goBackFromSettings()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <h1 class="welcome-title">Настройки</h1>
+    <div class="settings-container">
+      <!-- Display Group -->
+      <div class="settings-group">
+        <div class="settings-group-header">Показване</div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Покажи думите</div>
+            <div class="setting-sublabel">Показва името под картинката</div>
+          </div>
+          <div class="toggle" id="toggle-labels" onclick="toggleSetting('showLabels')"></div>
+        </div>
+        <div class="setting-preview">
+          <div class="preview-card">
+            <div class="preview-emoji">🐱</div>
+            <div class="preview-label" id="preview-label">котка</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gameplay Group -->
+      <div class="settings-group">
+        <div class="settings-group-header">Игра</div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Брой картинки</div>
+            <div class="setting-sublabel">Колко картинки са показани?</div>
+          </div>
+          <div class="number-selector">
+            <button class="number-option" data-value="2" onclick="setDistractors(2)">2</button>
+            <button class="number-option" data-value="4" onclick="setDistractors(4)">4</button>
+            <button class="number-option" data-value="6" onclick="setDistractors(6)">6</button>
+          </div>
+        </div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Ниво на трудност</div>
+            <div class="setting-sublabel" id="difficulty-description">Най-лесни: А, О, У, М, С, Н</div>
+          </div>
+          <div class="number-selector">
+            <button class="number-option difficulty-option" data-value="1" onclick="setDifficulty(1)">1</button>
+            <button class="number-option difficulty-option" data-value="2" onclick="setDifficulty(2)">2</button>
+            <button class="number-option difficulty-option" data-value="3" onclick="setDifficulty(3)">3</button>
+            <button class="number-option difficulty-option" data-value="4" onclick="setDifficulty(4)">4</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset Button -->
+      <button class="reset-btn" onclick="resetSettings()">Върни първоначалните настройки</button>
+    </div>
+  </div>
+
+  <!-- Letter Selection Screen -->
+  <div id="letter-screen" class="screen">
+    <button class="back-btn" onclick="showWelcome()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <button class="settings-btn" onclick="showSettings()">
+      <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+    </button>
+    <h1 class="welcome-title">Избери буква</h1>
+    <div class="letter-grid" id="letter-grid"></div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="screen">
+    <button class="back-btn" onclick="showLetterSelection()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="game-container">
+      <div class="sound-display" id="current-letter"></div>
+      <button class="speaker-btn" onclick="playInstruction()">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="pictures-grid" id="pictures-grid"></div>
+      <div class="round-indicator" id="round-indicator"></div>
+    </div>
+  </div>
+
+  <!-- Results Screen -->
+  <div id="results-screen" class="screen">
+    <div class="results-container">
+      <div class="results-letter" id="results-letter"></div>
+      <div class="stars-display" id="stars-display"></div>
+      <button class="continue-btn" id="results-continue-btn" onclick="showLetterSelection()">OK</button>
+    </div>
+  </div>
+
+  <!-- Vocabulary Game Screen -->
+  <div id="vocab-game-screen" class="screen">
+    <button class="back-btn" onclick="showWelcome()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="game-container">
+      <div class="vocab-word-display" id="vocab-word-display"></div>
+      <button class="speaker-btn vocab-speaker" onclick="playVocabWord()">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="pictures-grid" id="vocab-pictures-grid"></div>
+      <div class="round-indicator" id="vocab-round-indicator"></div>
+    </div>
+  </div>
+
+  <!-- Vocabulary Results Screen -->
+  <div id="vocab-results-screen" class="screen">
+    <div class="results-container">
+      <div class="vocab-results-title">Намери картинката</div>
+      <div class="stars-display" id="vocab-stars-display"></div>
+      <button class="continue-btn" onclick="showVocabGame()">Още!</button>
+    </div>
+  </div>
+
+  <!-- Bubble Pop Game Screen -->
+  <div id="bubble-game-screen" class="screen">
+    <button class="back-btn" onclick="showWelcome()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="game-container">
+      <div class="bubble-target">
+        Намери буквата
+        <span class="bubble-target-letter" id="bubble-target-letter">А</span>
+      </div>
+      <div class="bubble-score">
+        <div class="bubble-score-item">Верни: <span id="bubble-correct">0</span></div>
+        <div class="bubble-score-item">Грешки: <span id="bubble-wrong">0</span></div>
+      </div>
+      <div class="bubble-game-container" id="bubble-container"></div>
+      <div class="round-indicator" id="bubble-round-indicator"></div>
+    </div>
+  </div>
+
+  <!-- Bubble Pop Results Screen -->
+  <div id="bubble-results-screen" class="screen">
+    <div class="results-container">
+      <div class="vocab-results-title">Спукай балона</div>
+      <div class="stars-display" id="bubble-stars-display"></div>
+      <button class="continue-btn" onclick="showBubbleGame()">Още!</button>
+    </div>
+  </div>
+
+  <!-- Drag & Drop Game Screen -->
+  <div id="dragdrop-game-screen" class="screen">
+    <button class="back-btn" onclick="showWelcome()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="game-container">
+      <div class="dragdrop-instruction">Свържи голямата с малката буква</div>
+      <div class="dragdrop-container">
+        <div class="dragdrop-section">
+          <div class="dragdrop-section-label">Големи букви</div>
+          <div class="dragdrop-row" id="uppercase-row"></div>
+        </div>
+        <div class="dragdrop-divider"></div>
+        <div class="dragdrop-section">
+          <div class="dragdrop-section-label">Малки букви</div>
+          <div class="dragdrop-row" id="lowercase-row"></div>
+        </div>
+      </div>
+      <div class="round-indicator" id="dragdrop-round-indicator"></div>
+    </div>
+  </div>
+
+  <!-- Drag & Drop Results Screen -->
+  <div id="dragdrop-results-screen" class="screen">
+    <div class="results-container">
+      <div class="vocab-results-title">Свържи буквите</div>
+      <div class="stars-display" id="dragdrop-stars-display"></div>
+      <button class="continue-btn" onclick="showDragDropGame()">Още!</button>
+    </div>
+  </div>
+
+  <!-- Sticker Book Screen -->
+  <div id="sticker-book-screen" class="screen">
+    <button class="back-btn" onclick="showWelcome()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <h1 class="welcome-title">Моите стикери</h1>
+    <div class="sticker-book-stats" id="sticker-stats"></div>
+    <div class="sticker-book-container">
+      <div class="sticker-category" id="sticker-category-progress">
+        <div class="sticker-category-header">Прогрес</div>
+        <div class="sticker-grid" id="sticker-grid-progress"></div>
+      </div>
+      <div class="sticker-category" id="sticker-category-mastery">
+        <div class="sticker-category-header">Майсторство</div>
+        <div class="sticker-grid" id="sticker-grid-mastery"></div>
+      </div>
+      <div class="sticker-category" id="sticker-category-vocab">
+        <div class="sticker-category-header">Речник</div>
+        <div class="sticker-grid" id="sticker-grid-vocab"></div>
+      </div>
+      <div class="sticker-category" id="sticker-category-special">
+        <div class="sticker-category-header">Специални</div>
+        <div class="sticker-grid" id="sticker-grid-special"></div>
+      </div>
+      <div class="sticker-category" id="sticker-category-bonus">
+        <div class="sticker-category-header">Бонус</div>
+        <div class="sticker-grid" id="sticker-grid-bonus"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sound Train Game Screen -->
+  <div id="train-game-screen" class="screen">
+    <button class="back-btn" onclick="showWelcome()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="game-container">
+      <div class="train-instruction">Построй думата от срички!</div>
+      <div class="train-target-word" id="train-target-word" onclick="speakTrainWord()">🔊 ма-ма</div>
+      <button class="speaker-btn" onclick="speakTrainWord()">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="train-track" id="train-track"></div>
+      <div class="syllable-cards" id="syllable-cards"></div>
+      <div class="round-indicator" id="train-round-indicator"></div>
+    </div>
+  </div>
+
+  <!-- Sound Train Results Screen -->
+  <div id="train-results-screen" class="screen">
+    <div class="results-container">
+      <div class="results-sofia">
+        <div class="sofia">
+          <div class="sofia-hair"></div>
+          <div class="sofia-crown"></div>
+          <div class="sofia-head"></div>
+          <div class="sofia-eyes"><div class="sofia-eye"></div><div class="sofia-eye"></div></div>
+          <div class="sofia-cheeks"><div class="sofia-cheek"></div><div class="sofia-cheek"></div></div>
+          <div class="sofia-nose"></div>
+          <div class="sofia-smile"></div>
+          <div class="sofia-dress"></div>
+          <div class="sofia-arm-left"></div>
+          <div class="sofia-arm-right"></div>
+        </div>
+      </div>
+      <div class="vocab-results-title">Звуков влак</div>
+      <div class="stars-display" id="train-stars-display"></div>
+      <div class="sofia-message" id="train-sofia-message"></div>
+      <button class="continue-btn" onclick="showTrainGame()">Още!</button>
+    </div>
+  </div>
+
+  <!-- Build the Word Game Screen -->
+  <div id="build-word-game-screen" class="screen">
+    <button class="back-btn" onclick="showWelcome()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="game-container">
+      <div class="build-word-container">
+        <div class="build-word-image" id="build-word-image" onclick="speakBuildWord()">🍎</div>
+        <button class="speaker-btn" onclick="speakBuildWord()">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        </button>
+        <div class="build-word-slots" id="build-word-slots"></div>
+        <div class="letter-choices" id="letter-choices"></div>
+        <div class="round-indicator" id="build-word-round-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Build the Word Results Screen -->
+  <div id="build-word-results-screen" class="screen">
+    <div class="results-container">
+      <div class="results-sofia">
+        <div class="sofia">
+          <div class="sofia-hair"></div>
+          <div class="sofia-crown"></div>
+          <div class="sofia-head"></div>
+          <div class="sofia-eyes"><div class="sofia-eye"></div><div class="sofia-eye"></div></div>
+          <div class="sofia-cheeks"><div class="sofia-cheek"></div><div class="sofia-cheek"></div></div>
+          <div class="sofia-nose"></div>
+          <div class="sofia-smile"></div>
+          <div class="sofia-dress"></div>
+          <div class="sofia-arm-left"></div>
+          <div class="sofia-arm-right"></div>
+        </div>
+      </div>
+      <div class="vocab-results-title">Събери думата</div>
+      <div class="stars-display" id="build-word-stars-display"></div>
+      <div class="sofia-message" id="build-word-sofia-message"></div>
+      <button class="continue-btn" onclick="showBuildWordGame()">Още!</button>
+    </div>
+  </div>
+
+  <!-- Vowels vs Consonants Game Screen -->
+  <div id="sorting-game-screen" class="screen">
+    <button class="back-btn" onclick="showWelcome()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="game-container">
+      <div class="sorting-game-container">
+        <div class="sorting-instruction">Гласна или съгласна?</div>
+        <div class="sorting-progress">
+          <span id="sorting-progress-text">1 / 10</span>
+        </div>
+        <div class="sorting-current-letter" id="sorting-current-letter">А</div>
+        <div class="sorting-choices">
+          <button class="sorting-choice vowel-choice" onclick="answerSorting('vowel')">
+            <span class="choice-emoji">🔴</span>
+            <span class="choice-label">Гласна</span>
+          </button>
+          <button class="sorting-choice consonant-choice" onclick="answerSorting('consonant')">
+            <span class="choice-emoji">🔵</span>
+            <span class="choice-label">Съгласна</span>
+          </button>
+        </div>
+        <div class="sorting-score-mini">
+          <span>✓ <span id="sorting-correct">0</span></span>
+          <span>✗ <span id="sorting-wrong">0</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vowels vs Consonants Results Screen -->
+  <div id="sorting-results-screen" class="screen">
+    <div class="results-container">
+      <div class="results-sofia">
+        <div class="sofia">
+          <div class="sofia-hair"></div>
+          <div class="sofia-crown"></div>
+          <div class="sofia-head"></div>
+          <div class="sofia-eyes"><div class="sofia-eye"></div><div class="sofia-eye"></div></div>
+          <div class="sofia-cheeks"><div class="sofia-cheek"></div><div class="sofia-cheek"></div></div>
+          <div class="sofia-nose"></div>
+          <div class="sofia-smile"></div>
+          <div class="sofia-dress"></div>
+          <div class="sofia-arm-left"></div>
+          <div class="sofia-arm-right"></div>
+        </div>
+      </div>
+      <div class="vocab-results-title">Гласни и съгласни</div>
+      <div class="stars-display" id="sorting-stars-display"></div>
+      <div class="sofia-message" id="sorting-sofia-message"></div>
+      <button class="continue-btn" onclick="showSortingGame()">Още!</button>
+    </div>
+  </div>
+
+  <!-- Syllable Puzzle Game Screen -->
+  <div id="puzzle-game-screen" class="screen">
+    <button class="back-btn" onclick="showWelcome()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="game-container">
+      <div class="puzzle-game-container">
+        <div class="puzzle-instruction">Свържи половинките на думата!</div>
+        <div class="puzzle-target-image" id="puzzle-target-image" onclick="speakPuzzleWord()">🏠</div>
+        <button class="speaker-btn" onclick="speakPuzzleWord()">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        </button>
+        <div class="puzzle-word-display" id="puzzle-word-display"></div>
+        <div class="puzzle-columns">
+          <div class="puzzle-column">
+            <div class="puzzle-column-label">Начало</div>
+            <div id="puzzle-first-halves"></div>
+          </div>
+          <div class="puzzle-column">
+            <div class="puzzle-column-label">Край</div>
+            <div id="puzzle-second-halves"></div>
+          </div>
+        </div>
+        <div class="round-indicator" id="puzzle-round-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Syllable Puzzle Results Screen -->
+  <div id="puzzle-results-screen" class="screen">
+    <div class="results-container">
+      <div class="results-sofia">
+        <div class="sofia">
+          <div class="sofia-hair"></div>
+          <div class="sofia-crown"></div>
+          <div class="sofia-head"></div>
+          <div class="sofia-eyes"><div class="sofia-eye"></div><div class="sofia-eye"></div></div>
+          <div class="sofia-cheeks"><div class="sofia-cheek"></div><div class="sofia-cheek"></div></div>
+          <div class="sofia-nose"></div>
+          <div class="sofia-smile"></div>
+          <div class="sofia-dress"></div>
+          <div class="sofia-arm-left"></div>
+          <div class="sofia-arm-right"></div>
+        </div>
+      </div>
+      <div class="vocab-results-title">Срички пъзел</div>
+      <div class="stars-display" id="puzzle-stars-display"></div>
+      <div class="sofia-message" id="puzzle-sofia-message"></div>
+      <button class="continue-btn" onclick="showPuzzleGame()">Още!</button>
+    </div>
+  </div>
+
+  <!-- New Sticker Notification -->
+  <div id="sticker-notification" class="sticker-notification hidden">
+    <div class="sticker-notification-content">
+      <div class="sticker-notification-title">Нов стикер!</div>
+      <div class="sticker-notification-emoji" id="notification-emoji"></div>
+      <div class="sticker-notification-name" id="notification-name"></div>
+      <div class="sticker-notification-desc" id="notification-desc"></div>
+      <button class="sticker-notification-btn" onclick="hideNewStickerNotification()">Супер!</button>
+    </div>
+  </div>
+
+  <script>
+    // Game Data - loaded from JSON
+    let gameData = null;
+
+    // Game State
+    let currentLetter = null;
+    let currentRound = 0;
+    let mistakes = 0;
+    let usedCorrectWords = [];
+    let currentCorrectWord = null;
+
+    // =====================
+    // PROGRESS DATA MANAGEMENT
+    // =====================
+    const TUTOR_DATA_KEY = 'bgTutorData';
+    const TUTOR_DATA_VERSION = 1;
+
+    // Sticker definitions - achievements and their rewards
+    const STICKER_DEFINITIONS = {
+      // Letter mastery stickers
+      firstStar: { id: 'firstStar', name: 'Първа звезда', emoji: '🌟', description: 'Спечели първата си звезда', category: 'progress' },
+      perfectRound: { id: 'perfectRound', name: 'Перфектен рунд', emoji: '💫', description: 'Завърши рунд без грешки', category: 'progress' },
+      threeStarLetter: { id: 'threeStarLetter', name: 'Майстор на буквата', emoji: '🏆', description: 'Получи 3 звезди на буква', category: 'mastery' },
+      fiveLetters: { id: 'fiveLetters', name: 'Пет букви', emoji: '✋', description: 'Изиграй 5 различни букви', category: 'progress' },
+      tenLetters: { id: 'tenLetters', name: 'Десет букви', emoji: '🔟', description: 'Изиграй 10 различни букви', category: 'progress' },
+      allLettersPlayed: { id: 'allLettersPlayed', name: 'Всички букви', emoji: '🎓', description: 'Изиграй всички букви', category: 'mastery' },
+
+      // Vocabulary stickers
+      vocabFirst: { id: 'vocabFirst', name: 'Картинен старт', emoji: '🖼️', description: 'Завърши първата си игра "Намери картинката"', category: 'vocab' },
+      vocabPerfect: { id: 'vocabPerfect', name: 'Перфектен речник', emoji: '📚', description: 'Завърши "Намери картинката" без грешки', category: 'vocab' },
+      vocabFive: { id: 'vocabFive', name: 'Пет игри', emoji: '🎯', description: 'Изиграй 5 игри "Намери картинката"', category: 'vocab' },
+
+      // Special achievement stickers
+      explorer: { id: 'explorer', name: 'Изследовател', emoji: '🔍', description: 'Опитай и двете игри', category: 'special' },
+      dedicated: { id: 'dedicated', name: 'Отдаден ученик', emoji: '📖', description: 'Събери 10 звезди общо', category: 'special' },
+      superstar: { id: 'superstar', name: 'Суперзвезда', emoji: '⭐', description: 'Събери 20 звезди общо', category: 'special' },
+      champion: { id: 'champion', name: 'Шампион', emoji: '🥇', description: 'Получи 3 звезди на 5 букви', category: 'mastery' },
+      master: { id: 'master', name: 'Магистър', emoji: '👑', description: 'Получи 3 звезди на 10 букви', category: 'mastery' },
+
+      // Animal stickers (bonus rewards)
+      cat: { id: 'cat', name: 'Котенце', emoji: '🐱', description: 'Специален бонус стикер', category: 'bonus' },
+      dog: { id: 'dog', name: 'Кученце', emoji: '🐶', description: 'Специален бонус стикер', category: 'bonus' },
+      rabbit: { id: 'rabbit', name: 'Зайче', emoji: '🐰', description: 'Специален бонус стикер', category: 'bonus' },
+      bear: { id: 'bear', name: 'Мече', emoji: '🐻', description: 'Специален бонус стикер', category: 'bonus' },
+      unicorn: { id: 'unicorn', name: 'Еднорог', emoji: '🦄', description: 'Специален бонус стикер', category: 'bonus' },
+      rainbow: { id: 'rainbow', name: 'Дъга', emoji: '🌈', description: 'Специален бонус стикер', category: 'bonus' }
+    };
+
+    // Default data structure
+    function getDefaultTutorData() {
+      return {
+        version: TUTOR_DATA_VERSION,
+        phonics: {
+          letterStars: {},
+          wordStats: {}
+        },
+        vocab: {
+          wordStats: {},
+          gamesPlayed: 0
+        },
+        stickers: {
+          unlocked: [],
+          newlyUnlocked: [] // Stickers to show as "new"
+        }
+      };
+    }
+
+    // Load and migrate data
+    function loadTutorData() {
+      let data = null;
+
+      // Try to load new format
+      const stored = localStorage.getItem(TUTOR_DATA_KEY);
+      if (stored) {
+        try {
+          data = JSON.parse(stored);
+        } catch (e) {
+          console.error('Failed to parse tutor data:', e);
+        }
+      }
+
+      // If no new data, migrate from old format
+      if (!data) {
+        data = getDefaultTutorData();
+
+        // Migrate old phonics progress (letterStars)
+        const oldProgress = localStorage.getItem('bgPhonicsProgress');
+        if (oldProgress) {
+          try {
+            data.phonics.letterStars = JSON.parse(oldProgress);
+          } catch (e) {
+            console.error('Failed to migrate old progress:', e);
+          }
+        }
+
+        // Save migrated data
+        saveTutorData(data);
+      }
+
+      return data;
+    }
+
+    // Save data
+    function saveTutorData(data) {
+      localStorage.setItem(TUTOR_DATA_KEY, JSON.stringify(data));
+    }
+
+    // Global tutor data
+    let tutorData = loadTutorData();
+
+    // Convenience accessor for phonics letter stars (backward compatible)
+    let progress = tutorData.phonics.letterStars;
+
+    // =====================
+    // WORD STATS HELPERS
+    // =====================
+
+    // Get stats for a word in a specific game
+    function getWordStats(gameType, wordId) {
+      const stats = tutorData[gameType]?.wordStats[wordId];
+      return stats || { shown: 0, correct: 0, mistakes: 0, lastShown: 0 };
+    }
+
+    // Record a word being shown
+    function recordWordShown(gameType, wordId) {
+      if (!tutorData[gameType].wordStats[wordId]) {
+        tutorData[gameType].wordStats[wordId] = { shown: 0, correct: 0, mistakes: 0, lastShown: 0 };
+      }
+      tutorData[gameType].wordStats[wordId].shown++;
+      tutorData[gameType].wordStats[wordId].lastShown = Date.now();
+      saveTutorData(tutorData);
+    }
+
+    // Record correct answer
+    function recordWordCorrect(gameType, wordId) {
+      if (!tutorData[gameType].wordStats[wordId]) {
+        tutorData[gameType].wordStats[wordId] = { shown: 0, correct: 0, mistakes: 0, lastShown: 0 };
+      }
+      tutorData[gameType].wordStats[wordId].correct++;
+      saveTutorData(tutorData);
+    }
+
+    // Record mistake
+    function recordWordMistake(gameType, wordId) {
+      if (!tutorData[gameType].wordStats[wordId]) {
+        tutorData[gameType].wordStats[wordId] = { shown: 0, correct: 0, mistakes: 0, lastShown: 0 };
+      }
+      tutorData[gameType].wordStats[wordId].mistakes++;
+      saveTutorData(tutorData);
+    }
+
+    // =====================
+    // WEIGHTED SELECTION
+    // =====================
+
+    // Calculate weight for a word based on performance + recency
+    function calculateWordWeight(gameType, wordId) {
+      const stats = getWordStats(gameType, wordId);
+
+      // Base weight from mistake ratio
+      // Words with more mistakes relative to times shown get higher weight
+      const mistakeRatio = stats.shown > 0 ? stats.mistakes / stats.shown : 0;
+      const mistakeWeight = 1 + (mistakeRatio * 3);
+
+      // Recency boost: words not seen recently get a boost
+      // Max boost of 1.0 for words not seen in 10+ days
+      const daysSinceShown = stats.lastShown > 0
+        ? (Date.now() - stats.lastShown) / (1000 * 60 * 60 * 24)
+        : 10; // Treat never-seen as 10 days old
+      const recencyBoost = Math.min(daysSinceShown * 0.1, 1.0);
+
+      return mistakeWeight + recencyBoost;
+    }
+
+    // Weighted random selection from array of words
+    function weightedRandomSelect(words, gameType, excludeIds = []) {
+      // Filter out excluded words
+      const available = words.filter(w => !excludeIds.includes(w.id));
+      if (available.length === 0) return null;
+
+      // 20% chance to pick purely random (ensures variety)
+      if (Math.random() < 0.2) {
+        return available[Math.floor(Math.random() * available.length)];
+      }
+
+      // Calculate weights
+      const weighted = available.map(word => ({
+        word,
+        weight: calculateWordWeight(gameType, word.id)
+      }));
+
+      // Calculate total weight
+      const totalWeight = weighted.reduce((sum, item) => sum + item.weight, 0);
+
+      // Pick random point in total weight
+      let random = Math.random() * totalWeight;
+
+      // Find which word that corresponds to
+      for (const item of weighted) {
+        random -= item.weight;
+        if (random <= 0) {
+          return item.word;
+        }
+      }
+
+      // Fallback
+      return available[available.length - 1];
+    }
+
+    // =====================
+    // STICKER MANAGEMENT
+    // =====================
+
+    // Ensure stickers object exists (migration for existing users)
+    function ensureStickersData() {
+      if (!tutorData.stickers) {
+        tutorData.stickers = { unlocked: [], newlyUnlocked: [] };
+        saveTutorData(tutorData);
+      }
+      if (!tutorData.vocab.gamesPlayed) {
+        tutorData.vocab.gamesPlayed = 0;
+      }
+    }
+
+    // Check if a sticker is unlocked
+    function isStickerUnlocked(stickerId) {
+      ensureStickersData();
+      return tutorData.stickers.unlocked.includes(stickerId);
+    }
+
+    // Unlock a sticker (returns true if newly unlocked)
+    function unlockSticker(stickerId) {
+      ensureStickersData();
+      if (!isStickerUnlocked(stickerId)) {
+        tutorData.stickers.unlocked.push(stickerId);
+        tutorData.stickers.newlyUnlocked.push(stickerId);
+        saveTutorData(tutorData);
+        return true;
+      }
+      return false;
+    }
+
+    // Clear "new" status from stickers
+    function clearNewStickers() {
+      ensureStickersData();
+      tutorData.stickers.newlyUnlocked = [];
+      saveTutorData(tutorData);
+    }
+
+    // Get count of unlocked stickers
+    function getUnlockedStickerCount() {
+      ensureStickersData();
+      return tutorData.stickers.unlocked.length;
+    }
+
+    // Show new sticker notification
+    let pendingNotifications = [];
+    function showNewStickerNotification(stickerId) {
+      const sticker = STICKER_DEFINITIONS[stickerId];
+      if (!sticker) return;
+
+      pendingNotifications.push(sticker);
+      if (pendingNotifications.length === 1) {
+        displayNextNotification();
+      }
+    }
+
+    function displayNextNotification() {
+      if (pendingNotifications.length === 0) return;
+
+      const sticker = pendingNotifications[0];
+      document.getElementById('notification-emoji').textContent = sticker.emoji;
+      document.getElementById('notification-name').textContent = sticker.name;
+      document.getElementById('notification-desc').textContent = sticker.description;
+      document.getElementById('sticker-notification').classList.remove('hidden');
+      createConfetti(15);
+    }
+
+    function hideNewStickerNotification() {
+      document.getElementById('sticker-notification').classList.add('hidden');
+      pendingNotifications.shift();
+
+      // Show next notification if there are more
+      if (pendingNotifications.length > 0) {
+        setTimeout(displayNextNotification, 300);
+      }
+    }
+
+    // Check and award stickers based on current progress
+    function checkAndAwardStickers(context) {
+      ensureStickersData();
+      const newlyAwarded = [];
+
+      // Count stats
+      const lettersWithStars = Object.keys(progress).filter(l => progress[l] > 0);
+      const lettersWithThreeStars = Object.keys(progress).filter(l => progress[l] === 3);
+      const totalStars = Object.values(progress).reduce((sum, s) => sum + s, 0);
+      const totalLetters = gameData ? Object.keys(gameData.letters).length : 27;
+
+      // First star
+      if (lettersWithStars.length >= 1 && unlockSticker('firstStar')) {
+        newlyAwarded.push('firstStar');
+      }
+
+      // Perfect round (3 stars on a letter)
+      if (context === 'phonics' && mistakes === 0 && unlockSticker('perfectRound')) {
+        newlyAwarded.push('perfectRound');
+      }
+
+      // Three star letter
+      if (lettersWithThreeStars.length >= 1 && unlockSticker('threeStarLetter')) {
+        newlyAwarded.push('threeStarLetter');
+      }
+
+      // Five letters played
+      if (lettersWithStars.length >= 5 && unlockSticker('fiveLetters')) {
+        newlyAwarded.push('fiveLetters');
+      }
+
+      // Ten letters played
+      if (lettersWithStars.length >= 10 && unlockSticker('tenLetters')) {
+        newlyAwarded.push('tenLetters');
+      }
+
+      // All letters played
+      if (lettersWithStars.length >= totalLetters && unlockSticker('allLettersPlayed')) {
+        newlyAwarded.push('allLettersPlayed');
+      }
+
+      // Vocab first game
+      if (context === 'vocab' && tutorData.vocab.gamesPlayed >= 1 && unlockSticker('vocabFirst')) {
+        newlyAwarded.push('vocabFirst');
+      }
+
+      // Vocab perfect game
+      if (context === 'vocab' && vocabMistakes === 0 && unlockSticker('vocabPerfect')) {
+        newlyAwarded.push('vocabPerfect');
+      }
+
+      // Vocab five games
+      if (tutorData.vocab.gamesPlayed >= 5 && unlockSticker('vocabFive')) {
+        newlyAwarded.push('vocabFive');
+      }
+
+      // Explorer (tried both games)
+      if (lettersWithStars.length >= 1 && tutorData.vocab.gamesPlayed >= 1 && unlockSticker('explorer')) {
+        newlyAwarded.push('explorer');
+      }
+
+      // Dedicated (10 total stars)
+      if (totalStars >= 10 && unlockSticker('dedicated')) {
+        newlyAwarded.push('dedicated');
+      }
+
+      // Superstar (20 total stars)
+      if (totalStars >= 20 && unlockSticker('superstar')) {
+        newlyAwarded.push('superstar');
+      }
+
+      // Champion (3 stars on 5 letters)
+      if (lettersWithThreeStars.length >= 5 && unlockSticker('champion')) {
+        newlyAwarded.push('champion');
+      }
+
+      // Master (3 stars on 10 letters)
+      if (lettersWithThreeStars.length >= 10 && unlockSticker('master')) {
+        newlyAwarded.push('master');
+      }
+
+      // Bonus stickers - awarded at milestones
+      const bonusStickers = ['cat', 'dog', 'rabbit', 'bear', 'unicorn', 'rainbow'];
+      const unlockedCount = getUnlockedStickerCount();
+
+      // Award bonus stickers at certain unlock counts
+      if (unlockedCount >= 3 && unlockSticker('cat')) newlyAwarded.push('cat');
+      if (unlockedCount >= 6 && unlockSticker('dog')) newlyAwarded.push('dog');
+      if (unlockedCount >= 9 && unlockSticker('rabbit')) newlyAwarded.push('rabbit');
+      if (unlockedCount >= 12 && unlockSticker('bear')) newlyAwarded.push('bear');
+      if (unlockedCount >= 15 && unlockSticker('unicorn')) newlyAwarded.push('unicorn');
+      if (unlockedCount >= 18 && unlockSticker('rainbow')) newlyAwarded.push('rainbow');
+
+      // Show notifications for newly awarded stickers
+      newlyAwarded.forEach(id => showNewStickerNotification(id));
+
+      return newlyAwarded;
+    }
+
+    // Show sticker book screen
+    function showStickerBook() {
+      ensureStickersData();
+      renderStickerBook();
+      showScreen('sticker-book-screen');
+      // Clear "new" status when viewing the book
+      clearNewStickers();
+    }
+
+    // Render sticker book
+    function renderStickerBook() {
+      const categories = ['progress', 'mastery', 'vocab', 'special', 'bonus'];
+      const totalStickers = Object.keys(STICKER_DEFINITIONS).length;
+      const unlockedCount = getUnlockedStickerCount();
+
+      // Update stats
+      document.getElementById('sticker-stats').textContent =
+        `Събрани: ${unlockedCount} / ${totalStickers} стикера`;
+
+      categories.forEach(category => {
+        const grid = document.getElementById(`sticker-grid-${category}`);
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        const stickersInCategory = Object.values(STICKER_DEFINITIONS)
+          .filter(s => s.category === category);
+
+        stickersInCategory.forEach(sticker => {
+          const item = document.createElement('div');
+          item.className = 'sticker-item';
+
+          const isUnlocked = isStickerUnlocked(sticker.id);
+          const isNew = tutorData.stickers.newlyUnlocked.includes(sticker.id);
+
+          if (!isUnlocked) {
+            item.classList.add('locked');
+          }
+          if (isNew) {
+            item.classList.add('new');
+          }
+
+          item.innerHTML = `
+            <span>${sticker.emoji}</span>
+            <div class="sticker-tooltip">
+              <strong>${sticker.name}</strong><br>
+              ${sticker.description}
+            </div>
+          `;
+
+          grid.appendChild(item);
+        });
+      });
+    }
+
+    // Settings
+    const defaultSettings = { showLabels: false, numChoices: 4, difficulty: 1 };
+    let settings = JSON.parse(localStorage.getItem('bgPhonicsSettings') || JSON.stringify(defaultSettings));
+    // Ensure difficulty exists for older saved settings
+    if (!settings.difficulty) settings.difficulty = 1;
+
+    function saveSettings() {
+      localStorage.setItem('bgPhonicsSettings', JSON.stringify(settings));
+    }
+
+    const difficultyDescriptions = {
+      1: "Най-лесни: А, О, У, М, С, Н",
+      2: "Лесни: + Е, И, Л, Р, П, Т, К",
+      3: "Средни: + Б, Д, Г, В, З, Ф, Х",
+      4: "Всички букви"
+    };
+
+    function updateSettingsUI() {
+      // Update toggle
+      const toggle = document.getElementById('toggle-labels');
+      if (toggle) {
+        toggle.classList.toggle('active', settings.showLabels);
+      }
+      // Update preview label visibility
+      const previewLabel = document.getElementById('preview-label');
+      if (previewLabel) {
+        previewLabel.classList.toggle('hidden', !settings.showLabels);
+      }
+      // Update number selector (excluding difficulty options)
+      document.querySelectorAll('.number-option:not(.difficulty-option)').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.value) === settings.numChoices);
+      });
+      // Update difficulty selector
+      document.querySelectorAll('.difficulty-option').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.value) === settings.difficulty);
+      });
+      // Update difficulty description
+      const desc = document.getElementById('difficulty-description');
+      if (desc) {
+        desc.textContent = difficultyDescriptions[settings.difficulty] || difficultyDescriptions[1];
+      }
+    }
+
+    function resetSettings() {
+      settings = { ...defaultSettings };
+      saveSettings();
+      updateSettingsUI();
+    }
+
+    function toggleSetting(key) {
+      settings[key] = !settings[key];
+      saveSettings();
+      updateSettingsUI();
+    }
+
+    function setDistractors(num) {
+      settings.numChoices = num;
+      saveSettings();
+      updateSettingsUI();
+    }
+
+    function setDifficulty(level) {
+      settings.difficulty = level;
+      saveSettings();
+      updateSettingsUI();
+    }
+
+    // Track where settings was accessed from
+    let settingsReturnScreen = 'letter-screen';
+
+    function showSettings() {
+      // Settings are only accessible from the letter-screen now
+      settingsReturnScreen = 'letter-screen';
+      updateSettingsUI();
+      showScreen('settings-screen');
+    }
+
+    function goBackFromSettings() {
+      // Re-render letter grid in case difficulty changed
+      renderLetterGrid();
+      showScreen(settingsReturnScreen);
+    }
+
+    // Audio paths
+    const AUDIO_BASE = 'audio/';
+    const WORDS_BASE = 'audio/words/';
+    const GAMES_BASE = 'audio/games/';
+
+    // Helper: transliterate Bulgarian to Latin for audio filenames
+    function bgToLatin(text) {
+      const translit = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ж': 'zh',
+        'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
+        'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f',
+        'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sht', 'ъ': 'a', 'ь': 'y',
+        'ю': 'yu', 'я': 'ya'
+      };
+      return text.toLowerCase().split('').map(c => translit[c] || c).join('');
+    }
+
+    // Play word audio from games folder (queued)
+    function playGameWord(word) {
+      const filename = bgToLatin(word) + '.mp3';
+      return playAudio(filename, GAMES_BASE);
+    }
+
+    // Play word audio immediately (for user-initiated clicks)
+    function playGameWordNow(word) {
+      const filename = bgToLatin(word) + '.mp3';
+      return playAudioNow(filename, GAMES_BASE);
+    }
+
+    // Play syllable audio from games folder (queued)
+    function playGameSyllable(syllable) {
+      const filename = 'syl_' + bgToLatin(syllable) + '.mp3';
+      return playAudio(filename, GAMES_BASE);
+    }
+
+    // Play syllable audio immediately (for user-initiated clicks)
+    function playGameSyllableNow(syllable) {
+      const filename = 'syl_' + bgToLatin(syllable) + '.mp3';
+      return playAudioNow(filename, GAMES_BASE);
+    }
+
+    // Play letter audio from games folder (queued)
+    function playGameLetter(letter) {
+      const filename = 'letter_' + bgToLatin(letter.toLowerCase()) + '.mp3';
+      return playAudio(filename, GAMES_BASE);
+    }
+
+    // Play letter audio immediately (for user-initiated clicks)
+    function playGameLetterNow(letter) {
+      const filename = 'letter_' + bgToLatin(letter.toLowerCase()) + '.mp3';
+      return playAudioNow(filename, GAMES_BASE);
+    }
+
+    // Play game title and instruction audio (for kids who can't read)
+    function playGameTitleAudio(gameId) {
+      // Remove hyphens to match sanitized filenames
+      const sanitizedId = gameId.replace(/-/g, '');
+      const titleFile = 'game_game' + sanitizedId + '.mp3';
+      const instrFile = 'game_game' + sanitizedId + 'instr.mp3';
+      playAudioNow(titleFile, GAMES_BASE);
+      playAudio(instrFile, GAMES_BASE);
+    }
+
+    // Load game data from JSON
+    async function loadGameData() {
+      try {
+        const response = await fetch('words.json');
+        gameData = await response.json();
+        ensureStickersData();
+        updateStickerCountBadge();
+        showScreen('welcome-screen');
+      } catch (e) {
+        console.error('Failed to load game data:', e);
+        document.getElementById('loading-screen').innerHTML =
+          '<div class="loading">Error loading game data</div>';
+      }
+    }
+
+    // Build speech phrases from loaded data for fallback
+    function getSpeechText(audioFile) {
+      if (!gameData) return null;
+
+      // Check letters for instruction audio
+      for (const letter of Object.keys(gameData.letters)) {
+        const letterData = gameData.letters[letter];
+        if (letterData.audioFile === audioFile) {
+          return letterData.instructionText;
+        }
+      }
+
+      // Check feedback
+      if (gameData.feedback.correct.file === audioFile) {
+        return gameData.feedback.correct.text;
+      }
+      if (gameData.feedback.incorrect.file === audioFile) {
+        return gameData.feedback.incorrect.text;
+      }
+
+      // Check words
+      const word = gameData.words.find(w => w.audioFile === audioFile);
+      if (word) return word.word;
+
+      return null;
+    }
+
+    // Speech synthesis fallback
+    let bulgarianVoice = null;
+
+    function initVoices() {
+      const voices = speechSynthesis.getVoices();
+      // Try to find Bulgarian voice
+      bulgarianVoice = voices.find(v => v.lang.startsWith('bg')) ||
+                       voices.find(v => v.lang.includes('BG')) ||
+                       null;
+    }
+
+    // Initialize voices when available
+    if ('speechSynthesis' in window) {
+      speechSynthesis.onvoiceschanged = initVoices;
+      initVoices();
+    }
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        // Cancel any pending speech
+        speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'bg-BG';
+        utterance.rate = 0.85;
+        utterance.pitch = 1.1;
+
+        // Use Bulgarian voice if found
+        if (bulgarianVoice) {
+          utterance.voice = bulgarianVoice;
+        }
+
+        // Small delay helps on some browsers
+        setTimeout(() => {
+          speechSynthesis.speak(utterance);
+        }, 50);
+      }
+    }
+
+    // Speak syllable with emphasis (slower for learning)
+    function speakSyllable(syllable) {
+      if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(syllable);
+        utterance.lang = 'bg-BG';
+        utterance.rate = 0.7; // Slower for syllables
+        utterance.pitch = 1.2;
+
+        if (bulgarianVoice) {
+          utterance.voice = bulgarianVoice;
+        }
+
+        setTimeout(() => {
+          speechSynthesis.speak(utterance);
+        }, 50);
+      }
+    }
+
+    // Speak letter with emphasis
+    function speakLetter(letter) {
+      if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(letter);
+        utterance.lang = 'bg-BG';
+        utterance.rate = 0.6; // Very slow for individual letters
+        utterance.pitch = 1.2;
+
+        if (bulgarianVoice) {
+          utterance.voice = bulgarianVoice;
+        }
+
+        setTimeout(() => {
+          speechSynthesis.speak(utterance);
+        }, 50);
+      }
+    }
+
+    // Audio queue system to prevent overlapping
+    let audioQueue = [];
+    let currentAudio = null;
+    let isPlayingAudio = false;
+
+    function processAudioQueue() {
+      if (isPlayingAudio || audioQueue.length === 0) return;
+
+      isPlayingAudio = true;
+      const { file, basePath, resolve } = audioQueue.shift();
+
+      currentAudio = new Audio(basePath + file);
+
+      currentAudio.onended = () => {
+        isPlayingAudio = false;
+        currentAudio = null;
+        if (resolve) resolve();
+        processAudioQueue();
+      };
+
+      currentAudio.onerror = () => {
+        // Fallback to speech synthesis
+        const text = getSpeechText(file);
+        if (text) {
+          speak(text);
+        }
+        isPlayingAudio = false;
+        currentAudio = null;
+        if (resolve) resolve();
+        processAudioQueue();
+      };
+
+      currentAudio.play().catch(e => {
+        // Fallback to speech synthesis
+        const text = getSpeechText(file);
+        if (text) {
+          speak(text);
+        }
+        isPlayingAudio = false;
+        currentAudio = null;
+        if (resolve) resolve();
+        processAudioQueue();
+      });
+    }
+
+    // Helper: Play audio file with speech fallback (queued to prevent overlap)
+    function playAudio(file, basePath = AUDIO_BASE) {
+      return new Promise((resolve) => {
+        audioQueue.push({ file, basePath, resolve });
+        processAudioQueue();
+      });
+    }
+
+    // Play audio immediately, stopping any current audio (for user-initiated actions)
+    function playAudioNow(file, basePath = AUDIO_BASE) {
+      // Stop current audio and clear queue
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      audioQueue = [];
+      isPlayingAudio = false;
+
+      // Play immediately
+      const audio = new Audio(basePath + file);
+      currentAudio = audio;
+      isPlayingAudio = true;
+
+      audio.onended = () => {
+        isPlayingAudio = false;
+        currentAudio = null;
+      };
+
+      audio.onerror = (e) => {
+        console.error('Audio load error:', { file, path: basePath + file, error: audio.error });
+        isPlayingAudio = false;
+        currentAudio = null;
+      };
+
+      audio.play().catch(e => {
+        console.error('Audio playback failed:', { file, path: basePath + file, error: e.message });
+        const text = getSpeechText(file);
+        if (text) speak(text);
+        isPlayingAudio = false;
+        currentAudio = null;
+      });
+
+      return audio;
+    }
+
+    // Helper: Play letter sound (looks up audio file from gameData)
+    function playLetterSound(letter) {
+      if (!gameData || !gameData.letters) return;
+      // Try uppercase first, then lowercase
+      const upperLetter = letter.toUpperCase();
+      const letterData = gameData.letters[upperLetter];
+      if (letterData && letterData.audioFile) {
+        playAudio(letterData.audioFile);
+      } else {
+        // Fallback to speech synthesis
+        speak(letter);
+      }
+    }
+
+    // Helper: Shuffle array
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Screen navigation
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function showWelcome() {
+      updateStickerCountBadge();
+      showScreen('welcome-screen');
+    }
+
+    // Update sticker count badge on welcome screen
+    function updateStickerCountBadge() {
+      ensureStickersData();
+      const count = getUnlockedStickerCount();
+      const totalStickers = Object.keys(STICKER_DEFINITIONS).length;
+      const badge = document.getElementById('sticker-count-badge');
+      if (badge) {
+        badge.textContent = `${count}/${totalStickers}`;
+        // Add visual indicator if there are new stickers
+        if (tutorData.stickers.newlyUnlocked.length > 0) {
+          badge.style.animation = 'pulse 1s infinite';
+        } else {
+          badge.style.animation = '';
+        }
+      }
+    }
+
+    function showLetterSelection() {
+      playGameTitleAudio('zvukov-mach');
+      renderLetterGrid();
+      showScreen('letter-screen');
+    }
+
+    // Get letters filtered by current difficulty setting
+    function getFilteredLetters() {
+      const maxDifficulty = settings.difficulty;
+      return Object.entries(gameData.letters)
+        .filter(([letter, data]) => data.difficulty <= maxDifficulty)
+        .map(([letter]) => letter);
+    }
+
+    // Render letter grid with stars
+    function renderLetterGrid() {
+      const grid = document.getElementById('letter-grid');
+      grid.innerHTML = '';
+
+      const filteredLetters = getFilteredLetters();
+      filteredLetters.forEach(letter => {
+        const btn = document.createElement('button');
+        btn.className = 'letter-btn';
+        btn.innerHTML = `
+          ${letter}
+          <span class="letter-stars">${getStarsDisplay(progress[letter] || 0)}</span>
+        `;
+        btn.onclick = () => startGame(letter);
+        grid.appendChild(btn);
+      });
+    }
+
+    function getStarsDisplay(stars) {
+      if (stars === 0) return '';
+      return '⭐'.repeat(stars);
+    }
+
+    // Start game for a letter
+    function startGame(letter) {
+      currentLetter = letter;
+      currentRound = 0;
+      mistakes = 0;
+      usedCorrectWords = [];
+      showScreen('game-screen');
+      loadRound();
+    }
+
+    // Get correct words for current letter
+    function getCorrectWords() {
+      return gameData.words.filter(w => w.startsWith === currentLetter);
+    }
+
+    // Get distractor words (words that don't start with current letter, filtered by difficulty)
+    function getDistractors() {
+      const allowedLetters = getFilteredLetters();
+      return gameData.words.filter(w =>
+        w.startsWith !== currentLetter && allowedLetters.includes(w.startsWith)
+      );
+    }
+
+    // Select a correct word, avoiding repeats within session
+    function selectCorrectWord() {
+      const correctWords = getCorrectWords();
+      const available = correctWords.filter(w => !usedCorrectWords.includes(w.id));
+
+      // If all words used, reset and shuffle
+      if (available.length === 0) {
+        usedCorrectWords = [];
+        return shuffle(correctWords)[0];
+      }
+
+      const selected = shuffle(available)[0];
+      usedCorrectWords.push(selected.id);
+      return selected;
+    }
+
+    // Load a round
+    function loadRound() {
+      const letterData = gameData.letters[currentLetter];
+
+      // Update letter display
+      document.getElementById('current-letter').textContent = currentLetter;
+
+      // Update round indicator
+      const indicator = document.getElementById('round-indicator');
+      indicator.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'round-dot';
+        if (i < currentRound) dot.classList.add('completed');
+        if (i === currentRound) dot.classList.add('current');
+        indicator.appendChild(dot);
+      }
+
+      // Select correct word and random distractors based on settings
+      currentCorrectWord = selectCorrectWord();
+      const numDistractors = settings.numChoices - 1;
+      const distractors = shuffle(getDistractors()).slice(0, numDistractors);
+      const options = shuffle([currentCorrectWord, ...distractors]);
+
+      const grid = document.getElementById('pictures-grid');
+      grid.innerHTML = '';
+      grid.className = 'pictures-grid grid-' + settings.numChoices;
+
+      options.forEach(item => {
+        // Create wrapper if showing labels
+        if (settings.showLabels) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'picture-btn-wrapper';
+
+          const btn = document.createElement('button');
+          btn.className = 'picture-btn';
+          btn.dataset.wordId = item.id;
+          btn.onclick = () => handleAnswer(item, btn);
+
+          // Add emoji as text node
+          const emojiSpan = document.createElement('span');
+          emojiSpan.textContent = item.emoji;
+          btn.appendChild(emojiSpan);
+
+          // Add audio preview button
+          const audioBtn = createAudioPreviewButton(item);
+          btn.appendChild(audioBtn);
+
+          const label = document.createElement('div');
+          label.className = 'picture-label';
+          label.textContent = item.word;
+
+          wrapper.appendChild(btn);
+          wrapper.appendChild(label);
+          grid.appendChild(wrapper);
+        } else {
+          const btn = document.createElement('button');
+          btn.className = 'picture-btn';
+          btn.dataset.wordId = item.id;
+          btn.onclick = () => handleAnswer(item, btn);
+
+          // Add emoji as text node
+          const emojiSpan = document.createElement('span');
+          emojiSpan.textContent = item.emoji;
+          btn.appendChild(emojiSpan);
+
+          // Add audio preview button
+          const audioBtn = createAudioPreviewButton(item);
+          btn.appendChild(audioBtn);
+
+          grid.appendChild(btn);
+        }
+      });
+
+      // Play instruction
+      setTimeout(playInstruction, 500);
+    }
+
+    // Play instruction audio
+    function playInstruction() {
+      const letterData = gameData.letters[currentLetter];
+      playAudio(letterData.audioFile);
+    }
+
+    // Create audio preview button for a word
+    function createAudioPreviewButton(item) {
+      const audioBtn = document.createElement('button');
+      audioBtn.className = 'audio-preview-btn';
+      audioBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>';
+      audioBtn.title = 'Чуй думата';
+      audioBtn.onclick = (e) => {
+        e.stopPropagation(); // Prevent triggering the answer
+        audioBtn.classList.add('playing');
+        const audio = playAudio(item.audioFile, WORDS_BASE);
+        audio.onended = () => audioBtn.classList.remove('playing');
+        audio.onerror = () => audioBtn.classList.remove('playing');
+        // Fallback timeout in case audio events don't fire
+        setTimeout(() => audioBtn.classList.remove('playing'), 2000);
+      };
+      return audioBtn;
+    }
+
+    // Handle answer selection
+    function handleAnswer(item, btn) {
+      const wrapper = btn.closest('.picture-btn-wrapper');
+
+      if (item.id === currentCorrectWord.id) {
+        // Correct! Play word first, then bravo
+        btn.classList.add('correct');
+        playAudio(item.audioFile, WORDS_BASE);
+        setTimeout(() => {
+          playAudio('bravo.mp3');
+          createConfetti();
+        }, 800);
+
+        setTimeout(() => {
+          currentRound++;
+          if (currentRound >= 3) {
+            showResults();
+          } else {
+            loadRound();
+          }
+        }, 2300);
+      } else {
+        // Wrong - Play sequence: try-again -> word -> "не започва със: X" -> word -> "започва със: Y"
+        btn.classList.add('dimmed');
+        if (wrapper) wrapper.classList.add('dimmed');
+        mistakes++;
+
+        const phrases = gameData.incorrectPhrases;
+        const targetPhrase = phrases[currentLetter];
+        const actualPhrase = phrases[item.startsWith];
+
+        // Play audio sequence with delays
+        playAudio('try-again.mp3');
+        setTimeout(() => playAudio(item.audioFile, WORDS_BASE), 800);
+        setTimeout(() => playAudio(targetPhrase.neZapochva), 1600);
+        setTimeout(() => playAudio(item.audioFile, WORDS_BASE), 2800);
+        setTimeout(() => playAudio(actualPhrase.zapochva), 3600);
+      }
+    }
+
+    // Show results
+    function showResults() {
+      const stars = mistakes === 0 ? 3 : mistakes === 1 ? 2 : 1;
+
+      // Save progress (keep best score) using new data structure
+      if (!progress[currentLetter] || progress[currentLetter] < stars) {
+        progress[currentLetter] = stars;
+        tutorData.phonics.letterStars = progress;
+        saveTutorData(tutorData);
+      }
+
+      document.getElementById('results-letter').textContent = currentLetter;
+      document.getElementById('stars-display').textContent = '⭐'.repeat(stars);
+
+      showScreen('results-screen');
+
+      if (stars === 3) {
+        createConfetti(20);
+      }
+
+      // Check and award stickers
+      setTimeout(() => checkAndAwardStickers('phonics'), 1000);
+    }
+
+    // Create confetti effect
+    function createConfetti(count = 10) {
+      const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#F38181', '#AA96DA'];
+
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+          confetti.style.width = (Math.random() * 10 + 5) + 'px';
+          confetti.style.height = confetti.style.width;
+          document.body.appendChild(confetti);
+
+          setTimeout(() => confetti.remove(), 3000);
+        }, i * 100);
+      }
+    }
+
+    // =====================
+    // VOCABULARY GAME
+    // =====================
+    let vocabCurrentRound = 0;
+    let vocabMistakes = 0;
+    let vocabUsedWords = [];
+    let vocabCurrentWord = null;
+    const VOCAB_TOTAL_ROUNDS = 5;
+
+    function showVocabGame() {
+      playGameTitleAudio('nameri-kartinkata');
+      vocabCurrentRound = 0;
+      vocabMistakes = 0;
+      vocabUsedWords = [];
+      showScreen('vocab-game-screen');
+      loadVocabRound();
+    }
+
+    function loadVocabRound() {
+      // Update round indicator
+      const indicator = document.getElementById('vocab-round-indicator');
+      indicator.innerHTML = '';
+      for (let i = 0; i < VOCAB_TOTAL_ROUNDS; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'round-dot';
+        if (i < vocabCurrentRound) dot.classList.add('completed');
+        if (i === vocabCurrentRound) dot.classList.add('current');
+        indicator.appendChild(dot);
+      }
+
+      // Select word using weighted selection (prioritizes struggled/unseen words)
+      // Exclude recently used words in this session to avoid repetition
+      vocabCurrentWord = weightedRandomSelect(gameData.words, 'vocab', vocabUsedWords);
+
+      // If all words used in session, reset and pick again
+      if (!vocabCurrentWord) {
+        vocabUsedWords = [];
+        vocabCurrentWord = weightedRandomSelect(gameData.words, 'vocab', []);
+      }
+
+      vocabUsedWords.push(vocabCurrentWord.id);
+
+      // Record that this word was shown
+      recordWordShown('vocab', vocabCurrentWord.id);
+
+      // Display the word
+      document.getElementById('vocab-word-display').textContent = vocabCurrentWord.word;
+
+      // Select distractors (different emojis)
+      const numChoices = 4; // Fixed 4 choices for vocab game
+      const distractors = shuffle(
+        gameData.words.filter(w => w.id !== vocabCurrentWord.id)
+      ).slice(0, numChoices - 1);
+      const options = shuffle([vocabCurrentWord, ...distractors]);
+
+      // Render picture grid
+      const grid = document.getElementById('vocab-pictures-grid');
+      grid.innerHTML = '';
+      grid.className = 'pictures-grid grid-4';
+
+      options.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'picture-btn';
+        btn.dataset.wordId = item.id;
+        btn.onclick = () => handleVocabAnswer(item, btn);
+
+        const emojiSpan = document.createElement('span');
+        emojiSpan.textContent = item.emoji;
+        btn.appendChild(emojiSpan);
+
+        grid.appendChild(btn);
+      });
+
+      // Play the word audio
+      setTimeout(playVocabWord, 500);
+    }
+
+    function playVocabWord() {
+      if (vocabCurrentWord) {
+        playAudio(vocabCurrentWord.audioFile, WORDS_BASE);
+      }
+    }
+
+    function handleVocabAnswer(item, btn) {
+      if (item.id === vocabCurrentWord.id) {
+        // Correct! Record success
+        recordWordCorrect('vocab', vocabCurrentWord.id);
+
+        btn.classList.add('correct');
+        playAudio(vocabCurrentWord.audioFile, WORDS_BASE);
+        setTimeout(() => {
+          playAudio('bravo.mp3');
+          createConfetti();
+        }, 600);
+
+        setTimeout(() => {
+          vocabCurrentRound++;
+          if (vocabCurrentRound >= VOCAB_TOTAL_ROUNDS) {
+            showVocabResults();
+          } else {
+            loadVocabRound();
+          }
+        }, 1800);
+      } else {
+        // Wrong - record mistake on the TARGET word (the one they failed to identify)
+        recordWordMistake('vocab', vocabCurrentWord.id);
+
+        btn.classList.add('dimmed');
+        vocabMistakes++;
+        playAudio('try-again.mp3');
+        setTimeout(() => playAudio(item.audioFile, WORDS_BASE), 800);
+      }
+    }
+
+    function showVocabResults() {
+      const stars = vocabMistakes === 0 ? 3 : vocabMistakes <= 2 ? 2 : 1;
+
+      // Track games played
+      ensureStickersData();
+      if (!tutorData.vocab.gamesPlayed) tutorData.vocab.gamesPlayed = 0;
+      tutorData.vocab.gamesPlayed++;
+      saveTutorData(tutorData);
+
+      document.getElementById('vocab-stars-display').textContent = '⭐'.repeat(stars);
+
+      showScreen('vocab-results-screen');
+
+      if (stars === 3) {
+        createConfetti(20);
+      }
+
+      // Check and award stickers
+      setTimeout(() => checkAndAwardStickers('vocab'), 1000);
+    }
+
+    // =====================
+    // BUBBLE POP GAME
+    // =====================
+    let bubbleCurrentRound = 0;
+    let bubbleCorrect = 0;
+    let bubbleMistakes = 0;
+    let bubbleTotalMistakes = 0;
+    let bubbleTargetLetter = null;
+    let bubbleGameActive = false;
+    const BUBBLE_TOTAL_ROUNDS = 5;
+    const BUBBLES_PER_ROUND = 8;
+    const CORRECT_BUBBLES_NEEDED = 3;
+
+    const BULGARIAN_LETTERS = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ю', 'Я'];
+
+    // Bubble sound effects using Web Audio API
+    let bubbleAudioCtx = null;
+    function getBubbleAudioContext() {
+      if (!bubbleAudioCtx) bubbleAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return bubbleAudioCtx;
+    }
+
+    function playBubblePopSound() {
+      try {
+        const ctx = getBubbleAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        // Fun rising "pop" sound
+        osc.frequency.setValueAtTime(300, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.05);
+        osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.15);
+
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+
+        osc.type = 'sine';
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.15);
+      } catch (e) { console.log('Audio not supported'); }
+    }
+
+    function playBubbleWrongSound() {
+      try {
+        const ctx = getBubbleAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        // Soft descending "bonk" sound
+        osc.frequency.setValueAtTime(200, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.2);
+
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+
+        osc.type = 'triangle';
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.2);
+      } catch (e) { console.log('Audio not supported'); }
+    }
+
+    function showBubbleGame() {
+      playGameTitleAudio('spukay-balona');
+      bubbleCurrentRound = 0;
+      bubbleCorrect = 0;
+      bubbleMistakes = 0;
+      bubbleTotalMistakes = 0;
+      bubbleGameActive = true;
+      showScreen('bubble-game-screen');
+      loadBubbleRound();
+    }
+
+    function loadBubbleRound() {
+      const indicator = document.getElementById('bubble-round-indicator');
+      indicator.innerHTML = '';
+      for (let i = 0; i < BUBBLE_TOTAL_ROUNDS; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'round-dot';
+        if (i < bubbleCurrentRound) dot.classList.add('completed');
+        if (i === bubbleCurrentRound) dot.classList.add('current');
+        indicator.appendChild(dot);
+      }
+
+      bubbleCorrect = 0;
+      bubbleMistakes = 0;
+      document.getElementById('bubble-correct').textContent = '0';
+      document.getElementById('bubble-wrong').textContent = bubbleTotalMistakes;
+
+      bubbleTargetLetter = BULGARIAN_LETTERS[Math.floor(Math.random() * BULGARIAN_LETTERS.length)];
+      document.getElementById('bubble-target-letter').textContent = bubbleTargetLetter;
+
+      const container = document.getElementById('bubble-container');
+      container.innerHTML = '';
+
+      const bubbleLetters = [];
+      for (let i = 0; i < CORRECT_BUBBLES_NEEDED; i++) {
+        bubbleLetters.push(bubbleTargetLetter);
+      }
+
+      const wrongLetters = BULGARIAN_LETTERS.filter(l => l !== bubbleTargetLetter);
+      for (let i = 0; i < BUBBLES_PER_ROUND - CORRECT_BUBBLES_NEEDED; i++) {
+        bubbleLetters.push(wrongLetters[Math.floor(Math.random() * wrongLetters.length)]);
+      }
+
+      const shuffledLetters = shuffle(bubbleLetters);
+      const placedBubbles = []; // Track placed balloon positions
+      const balloonSize = 85; // Balloon height in pixels (taller now)
+      const containerRect = container.getBoundingClientRect();
+      const minDistance = balloonSize + 15; // Minimum distance between balloon centers
+
+      shuffledLetters.forEach((letter, index) => {
+        const bubble = document.createElement('div');
+        bubble.className = `bubble color-${(index % 6) + 1} floating`;
+        bubble.textContent = letter;
+        bubble.dataset.letter = letter;
+
+        // Find non-overlapping position
+        let left, top, attempts = 0;
+        const maxAttempts = 50;
+
+        do {
+          left = 8 + Math.random() * 65; // percentage (adjusted for larger balloons)
+          top = 5 + Math.random() * 55;  // percentage (leave room for string at bottom)
+          attempts++;
+        } while (
+          attempts < maxAttempts &&
+          placedBubbles.some(pos => {
+            // Convert percentages to approximate pixels for distance check
+            const dx = (left - pos.left) * containerRect.width / 100;
+            const dy = (top - pos.top) * containerRect.height / 100;
+            return Math.sqrt(dx * dx + dy * dy) < minDistance;
+          })
+        );
+
+        placedBubbles.push({ left, top });
+        bubble.style.left = left + '%';
+        bubble.style.top = top + '%';
+        // Varied animation delays for more organic movement
+        const floatDelay = (Math.random() * 3).toFixed(2);
+        const driftDelay = (Math.random() * 5).toFixed(2);
+        bubble.style.animationDelay = `${floatDelay}s, ${driftDelay}s`;
+        bubble.onclick = () => handleBubblePop(bubble, letter);
+        container.appendChild(bubble);
+      });
+
+      bubbleGameActive = true;
+    }
+
+    function handleBubblePop(bubble, letter) {
+      if (!bubbleGameActive || bubble.classList.contains('popping')) return;
+
+      if (letter === bubbleTargetLetter) {
+        bubble.classList.remove('floating');
+        bubble.classList.add('popping');
+        bubbleCorrect++;
+        document.getElementById('bubble-correct').textContent = bubbleCorrect;
+        playBubblePopSound();
+        // Read the letter after pop sound
+        setTimeout(() => playLetterSound(letter), 250);
+        createConfetti(3);
+        setTimeout(() => bubble.remove(), 300);
+
+        if (bubbleCorrect >= CORRECT_BUBBLES_NEEDED) {
+          bubbleGameActive = false;
+          setTimeout(() => {
+            bubbleCurrentRound++;
+            if (bubbleCurrentRound >= BUBBLE_TOTAL_ROUNDS) {
+              showBubbleResults();
+            } else {
+              loadBubbleRound();
+            }
+          }, 500);
+        }
+      } else {
+        bubble.classList.add('wrong');
+        bubbleMistakes++;
+        bubbleTotalMistakes++;
+        document.getElementById('bubble-wrong').textContent = bubbleTotalMistakes;
+        playBubbleWrongSound();
+        // Read the letter after wrong sound
+        setTimeout(() => playLetterSound(letter), 300);
+        setTimeout(() => bubble.classList.remove('wrong'), 400);
+      }
+    }
+
+    function showBubbleResults() {
+      const stars = bubbleTotalMistakes === 0 ? 3 : bubbleTotalMistakes <= 3 ? 2 : 1;
+      document.getElementById('bubble-stars-display').textContent = '⭐'.repeat(stars);
+
+      showScreen('bubble-results-screen');
+      if (stars === 3) createConfetti(20);
+    }
+
+    // =====================
+    // DRAG & DROP GAME
+    // =====================
+    let dragDropCurrentRound = 0;
+    let dragDropMistakes = 0;
+    let dragDropMatched = 0;
+    let dragDropLetters = [];
+    const DRAGDROP_TOTAL_ROUNDS = 5;
+    const LETTERS_PER_ROUND = 4;
+
+    const LETTER_PAIRS = [
+      { upper: 'А', lower: 'а' }, { upper: 'Б', lower: 'б' }, { upper: 'В', lower: 'в' },
+      { upper: 'Г', lower: 'г' }, { upper: 'Д', lower: 'д' }, { upper: 'Е', lower: 'е' },
+      { upper: 'Ж', lower: 'ж' }, { upper: 'З', lower: 'з' }, { upper: 'И', lower: 'и' },
+      { upper: 'Й', lower: 'й' }, { upper: 'К', lower: 'к' }, { upper: 'Л', lower: 'л' },
+      { upper: 'М', lower: 'м' }, { upper: 'Н', lower: 'н' }, { upper: 'О', lower: 'о' },
+      { upper: 'П', lower: 'п' }, { upper: 'Р', lower: 'р' }, { upper: 'С', lower: 'с' },
+      { upper: 'Т', lower: 'т' }, { upper: 'У', lower: 'у' }, { upper: 'Ф', lower: 'ф' },
+      { upper: 'Х', lower: 'х' }, { upper: 'Ц', lower: 'ц' }, { upper: 'Ч', lower: 'ч' },
+      { upper: 'Ш', lower: 'ш' }, { upper: 'Щ', lower: 'щ' }, { upper: 'Ю', lower: 'ю' },
+      { upper: 'Я', lower: 'я' }
+    ];
+
+    let selectedUppercase = null;
+
+    function showDragDropGame() {
+      playGameTitleAudio('svarzhi-bukvite');
+      dragDropCurrentRound = 0;
+      dragDropMistakes = 0;
+      selectedUppercase = null;
+      showScreen('dragdrop-game-screen');
+      loadDragDropRound();
+    }
+
+    function loadDragDropRound() {
+      const indicator = document.getElementById('dragdrop-round-indicator');
+      indicator.innerHTML = '';
+      for (let i = 0; i < DRAGDROP_TOTAL_ROUNDS; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'round-dot';
+        if (i < dragDropCurrentRound) dot.classList.add('completed');
+        if (i === dragDropCurrentRound) dot.classList.add('current');
+        indicator.appendChild(dot);
+      }
+
+      dragDropMatched = 0;
+      selectedUppercase = null;
+      dragDropLetters = shuffle([...LETTER_PAIRS]).slice(0, LETTERS_PER_ROUND);
+
+      // Render uppercase letters (clickable)
+      const upperRow = document.getElementById('uppercase-row');
+      upperRow.innerHTML = '';
+      shuffle([...dragDropLetters]).forEach(pair => {
+        const letter = document.createElement('div');
+        letter.className = 'draggable-letter uppercase';
+        letter.textContent = pair.upper;
+        letter.dataset.upper = pair.upper;
+        letter.dataset.lower = pair.lower;
+        letter.onclick = () => handleUppercaseClick(letter);
+        upperRow.appendChild(letter);
+      });
+
+      // Render lowercase letters (clickable targets)
+      const lowerRow = document.getElementById('lowercase-row');
+      lowerRow.innerHTML = '';
+      shuffle([...dragDropLetters]).forEach(pair => {
+        const dropZone = document.createElement('div');
+        dropZone.className = 'drop-zone';
+        dropZone.textContent = pair.lower;
+        dropZone.dataset.lower = pair.lower;
+        dropZone.dataset.upper = pair.upper;
+        dropZone.onclick = () => handleLowercaseClick(dropZone);
+        lowerRow.appendChild(dropZone);
+      });
+    }
+
+    function handleUppercaseClick(letter) {
+      if (letter.classList.contains('matched')) return;
+
+      // Deselect previous selection
+      if (selectedUppercase) {
+        selectedUppercase.classList.remove('selected');
+      }
+
+      // Select this letter
+      selectedUppercase = letter;
+      letter.classList.add('selected');
+
+      // Read the letter aloud
+      playLetterSound(letter.dataset.upper);
+    }
+
+    function handleLowercaseClick(dropZone) {
+      if (dropZone.classList.contains('matched')) return;
+      if (!selectedUppercase) return; // Must select uppercase first
+
+      const clickedLetter = dropZone.dataset.lower;
+
+      if (selectedUppercase.dataset.lower === clickedLetter) {
+        // Correct match!
+        selectedUppercase.classList.remove('selected');
+        selectedUppercase.classList.add('matched');
+        dropZone.classList.add('matched');
+        dragDropMatched++;
+        playAudio('bravo.mp3');
+        // Read the letter after bravo sound
+        setTimeout(() => playLetterSound(clickedLetter), 500);
+        createConfetti(3);
+        selectedUppercase = null;
+
+        if (dragDropMatched >= LETTERS_PER_ROUND) {
+          setTimeout(() => {
+            dragDropCurrentRound++;
+            if (dragDropCurrentRound >= DRAGDROP_TOTAL_ROUNDS) showDragDropResults();
+            else loadDragDropRound();
+          }, 800);
+        }
+      } else {
+        // Wrong match
+        dropZone.classList.add('wrong');
+        dragDropMistakes++;
+        playAudio('try-again.mp3');
+        // Read the clicked letter after try-again sound
+        setTimeout(() => playLetterSound(clickedLetter), 500);
+        setTimeout(() => dropZone.classList.remove('wrong'), 300);
+      }
+    }
+
+    function showDragDropResults() {
+      const stars = dragDropMistakes === 0 ? 3 : dragDropMistakes <= 3 ? 2 : 1;
+      document.getElementById('dragdrop-stars-display').textContent = '⭐'.repeat(stars);
+
+      showScreen('dragdrop-results-screen');
+      if (stars === 3) createConfetti(20);
+    }
+
+    // =====================
+    // SOUND TRAIN GAME (Звуков влак)
+    // =====================
+    const TRAIN_WORDS = [
+      { word: 'мама', syllables: ['ма', 'ма'], emoji: '👩' },
+      { word: 'баба', syllables: ['ба', 'ба'], emoji: '👵' },
+      { word: 'тато', syllables: ['та', 'то'], emoji: '👨' },
+      { word: 'дядо', syllables: ['дя', 'до'], emoji: '👴' },
+      { word: 'кола', syllables: ['ко', 'ла'], emoji: '🚗' },
+      { word: 'вода', syllables: ['во', 'да'], emoji: '💧' },
+      { word: 'риба', syllables: ['ри', 'ба'], emoji: '🐟' },
+      { word: 'коте', syllables: ['ко', 'те'], emoji: '🐱' },
+      { word: 'куче', syllables: ['ку', 'че'], emoji: '🐕' },
+      { word: 'пиле', syllables: ['пи', 'ле'], emoji: '🐤' },
+      { word: 'слон', syllables: ['слон'], emoji: '🐘' },
+      { word: 'мечка', syllables: ['меч', 'ка'], emoji: '🐻' },
+      { word: 'лъв', syllables: ['лъв'], emoji: '🦁' },
+      { word: 'заек', syllables: ['за', 'ек'], emoji: '🐰' },
+      { word: 'небе', syllables: ['не', 'бе'], emoji: '🌤️' },
+      { word: 'слънце', syllables: ['слън', 'це'], emoji: '☀️' },
+      { word: 'луна', syllables: ['лу', 'на'], emoji: '🌙' },
+      { word: 'цвете', syllables: ['цве', 'те'], emoji: '🌸' },
+      { word: 'ябълка', syllables: ['ябъл', 'ка'], emoji: '🍎' },
+      { word: 'круша', syllables: ['кру', 'ша'], emoji: '🍐' },
+      { word: 'банан', syllables: ['ба', 'нан'], emoji: '🍌' },
+      { word: 'диня', syllables: ['ди', 'ня'], emoji: '🍉' },
+      { word: 'торта', syllables: ['тор', 'та'], emoji: '🎂' },
+      { word: 'сладолед', syllables: ['сла', 'до', 'лед'], emoji: '🍦' }
+    ];
+
+    let trainCurrentRound = 0;
+    let trainMistakes = 0;
+    let trainCurrentWord = null;
+    let trainFilledSlots = [];
+    const TRAIN_TOTAL_ROUNDS = 5;
+
+    function showTrainGame() {
+      playGameTitleAudio('zvukov-vlak');
+      trainCurrentRound = 0;
+      trainMistakes = 0;
+      showScreen('train-game-screen');
+      loadTrainRound();
+    }
+
+    function loadTrainRound() {
+      // Update round indicator
+      const indicator = document.getElementById('train-round-indicator');
+      indicator.innerHTML = '';
+      for (let i = 0; i < TRAIN_TOTAL_ROUNDS; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'round-dot';
+        if (i < trainCurrentRound) dot.classList.add('completed');
+        if (i === trainCurrentRound) dot.classList.add('current');
+        indicator.appendChild(dot);
+      }
+
+      // Select random word
+      trainCurrentWord = TRAIN_WORDS[Math.floor(Math.random() * TRAIN_WORDS.length)];
+      trainFilledSlots = [];
+
+      // Display target word with emoji
+      const targetEl = document.getElementById('train-target-word');
+      targetEl.innerHTML = `${trainCurrentWord.emoji} ${trainCurrentWord.syllables.join('-')}`;
+
+      // Create train slots
+      const trackEl = document.getElementById('train-track');
+      trackEl.innerHTML = '';
+      trainCurrentWord.syllables.forEach((_, idx) => {
+        const slot = document.createElement('div');
+        slot.className = 'train-slot';
+        slot.dataset.index = idx;
+        trackEl.appendChild(slot);
+      });
+
+      // Create syllable cards (shuffled, with distractors)
+      const cardsEl = document.getElementById('syllable-cards');
+      cardsEl.innerHTML = '';
+
+      // Add correct syllables
+      let allSyllables = [...trainCurrentWord.syllables];
+
+      // Add some random distractors
+      const distractors = ['ма', 'ба', 'ла', 'ти', 'ко', 'во', 'ни', 'ре', 'са', 'до'];
+      const numDistractors = Math.min(3, 6 - allSyllables.length);
+      for (let i = 0; i < numDistractors; i++) {
+        const d = distractors[Math.floor(Math.random() * distractors.length)];
+        if (!allSyllables.includes(d)) {
+          allSyllables.push(d);
+        }
+      }
+
+      shuffle(allSyllables).forEach(syllable => {
+        const card = document.createElement('button');
+        card.className = 'syllable-card';
+        card.textContent = syllable;
+        card.onclick = () => handleSyllableClick(card, syllable);
+        cardsEl.appendChild(card);
+      });
+
+      // Queue the word to play after title and instructions finish
+      speakTrainWord();
+    }
+
+    function speakTrainWord() {
+      if (trainCurrentWord) {
+        playGameWord(trainCurrentWord.word);
+      }
+    }
+
+    function handleSyllableClick(card, syllable) {
+      if (card.classList.contains('used')) return;
+
+      // Play the syllable audio immediately (user click)
+      playGameSyllableNow(syllable);
+
+      const expectedIndex = trainFilledSlots.length;
+      const expectedSyllable = trainCurrentWord.syllables[expectedIndex];
+
+      if (syllable === expectedSyllable) {
+        // Correct!
+        card.classList.add('used', 'correct');
+        trainFilledSlots.push(syllable);
+
+        // Fill the slot
+        const slots = document.querySelectorAll('.train-slot');
+        slots[expectedIndex].textContent = syllable;
+        slots[expectedIndex].classList.add('filled');
+
+        // Check if complete
+        if (trainFilledSlots.length === trainCurrentWord.syllables.length) {
+          createConfetti(5);
+          // Queue bravo then the complete word (audio queue prevents overlap)
+          playAudio('bravo.mp3');
+          playGameWord(trainCurrentWord.word);
+
+          setTimeout(() => {
+            trainCurrentRound++;
+            if (trainCurrentRound >= TRAIN_TOTAL_ROUNDS) {
+              showTrainResults();
+            } else {
+              loadTrainRound();
+            }
+          }, 2000);
+        }
+      } else {
+        // Wrong
+        card.classList.add('wrong');
+        trainMistakes++;
+        playAudio('try-again.mp3');
+        setTimeout(() => card.classList.remove('wrong'), 300);
+      }
+    }
+
+    function showTrainResults() {
+      const stars = trainMistakes === 0 ? 3 : trainMistakes <= 3 ? 2 : 1;
+      document.getElementById('train-stars-display').textContent = '⭐'.repeat(stars);
+
+      const messages = ['Браво!', 'Много добре!', 'Супер!', 'Отлично!'];
+      document.getElementById('train-sofia-message').textContent =
+        messages[Math.floor(Math.random() * messages.length)];
+
+      showScreen('train-results-screen');
+      if (stars === 3) createConfetti(20);
+    }
+
+    // =====================
+    // BUILD THE WORD GAME (Събери думата)
+    // =====================
+    const BUILD_WORDS = [
+      { word: 'СОК', letters: ['С', 'О', 'К'], emoji: '🧃' },
+      { word: 'НОС', letters: ['Н', 'О', 'С'], emoji: '👃' },
+      { word: 'КОН', letters: ['К', 'О', 'Н'], emoji: '🐴' },
+      { word: 'СОЛ', letters: ['С', 'О', 'Л'], emoji: '🧂' },
+      { word: 'МЕД', letters: ['М', 'Е', 'Д'], emoji: '🍯' },
+      { word: 'ДОМ', letters: ['Д', 'О', 'М'], emoji: '🏠' },
+      { word: 'СИР', letters: ['С', 'И', 'Р'], emoji: '🧀' },
+      { word: 'РАК', letters: ['Р', 'А', 'К'], emoji: '🦀' },
+      { word: 'ЛЪВ', letters: ['Л', 'Ъ', 'В'], emoji: '🦁' },
+      { word: 'КОТ', letters: ['К', 'О', 'Т'], emoji: '🐱' },
+      { word: 'ПЕС', letters: ['П', 'Е', 'С'], emoji: '🐕' },
+      { word: 'МАК', letters: ['М', 'А', 'К'], emoji: '🌺' },
+      { word: 'ЗЪБ', letters: ['З', 'Ъ', 'Б'], emoji: '🦷' },
+      { word: 'НОЖ', letters: ['Н', 'О', 'Ж'], emoji: '🔪' },
+      { word: 'МИШ', letters: ['М', 'И', 'Ш'], emoji: '🐭' },
+      { word: 'ДАР', letters: ['Д', 'А', 'Р'], emoji: '🎁' },
+      { word: 'ЧАЙ', letters: ['Ч', 'А', 'Й'], emoji: '🍵' },
+      { word: 'КОЛА', letters: ['К', 'О', 'Л', 'А'], emoji: '🚗' },
+      { word: 'РИБА', letters: ['Р', 'И', 'Б', 'А'], emoji: '🐟' },
+      { word: 'КОТЕ', letters: ['К', 'О', 'Т', 'Е'], emoji: '🐱' },
+      { word: 'ВОДА', letters: ['В', 'О', 'Д', 'А'], emoji: '💧' },
+      { word: 'СЛОН', letters: ['С', 'Л', 'О', 'Н'], emoji: '🐘' },
+      { word: 'ЗАЕК', letters: ['З', 'А', 'Е', 'К'], emoji: '🐰' },
+      { word: 'МАМА', letters: ['М', 'А', 'М', 'А'], emoji: '👩' }
+    ];
+
+    let buildWordCurrentRound = 0;
+    let buildWordMistakes = 0;
+    let buildWordCurrentWord = null;
+    let buildWordFilledLetters = [];
+    const BUILD_WORD_TOTAL_ROUNDS = 5;
+
+    function showBuildWordGame() {
+      playGameTitleAudio('saberi-dumata');
+      buildWordCurrentRound = 0;
+      buildWordMistakes = 0;
+      showScreen('build-word-game-screen');
+      loadBuildWordRound();
+    }
+
+    function loadBuildWordRound() {
+      // Update round indicator
+      const indicator = document.getElementById('build-word-round-indicator');
+      indicator.innerHTML = '';
+      for (let i = 0; i < BUILD_WORD_TOTAL_ROUNDS; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'round-dot';
+        if (i < buildWordCurrentRound) dot.classList.add('completed');
+        if (i === buildWordCurrentRound) dot.classList.add('current');
+        indicator.appendChild(dot);
+      }
+
+      // Select random word
+      buildWordCurrentWord = BUILD_WORDS[Math.floor(Math.random() * BUILD_WORDS.length)];
+      buildWordFilledLetters = [];
+
+      // Display image
+      document.getElementById('build-word-image').textContent = buildWordCurrentWord.emoji;
+
+      // Create letter slots
+      const slotsEl = document.getElementById('build-word-slots');
+      slotsEl.innerHTML = '';
+      buildWordCurrentWord.letters.forEach((_, idx) => {
+        const slot = document.createElement('div');
+        slot.className = 'letter-slot';
+        slot.dataset.index = idx;
+        slotsEl.appendChild(slot);
+      });
+
+      // Create letter choices (shuffled, with distractors)
+      const choicesEl = document.getElementById('letter-choices');
+      choicesEl.innerHTML = '';
+
+      let allLetters = [...buildWordCurrentWord.letters];
+
+      // Add distractors (ensure they're different)
+      const bgAlphabet = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯ'.split('');
+      const numDistractors = Math.max(2, 6 - allLetters.length);
+      while (allLetters.length < buildWordCurrentWord.letters.length + numDistractors) {
+        const randomLetter = bgAlphabet[Math.floor(Math.random() * bgAlphabet.length)];
+        if (!allLetters.includes(randomLetter) || allLetters.filter(l => l === randomLetter).length < 2) {
+          allLetters.push(randomLetter);
+        }
+      }
+
+      shuffle(allLetters).forEach(letter => {
+        const choice = document.createElement('button');
+        choice.className = 'letter-choice';
+        choice.textContent = letter;
+        choice.onclick = () => handleBuildLetterClick(choice, letter);
+        choicesEl.appendChild(choice);
+      });
+
+      // Queue the word to play after title and instructions finish
+      speakBuildWord();
+    }
+
+    function speakBuildWord() {
+      if (buildWordCurrentWord) {
+        playGameWord(buildWordCurrentWord.word.toLowerCase());
+      }
+    }
+
+    function handleBuildLetterClick(choice, letter) {
+      if (choice.classList.contains('used')) return;
+
+      // Play the letter audio immediately (user click)
+      playGameLetterNow(letter);
+
+      const expectedIndex = buildWordFilledLetters.length;
+      const expectedLetter = buildWordCurrentWord.letters[expectedIndex];
+
+      if (letter === expectedLetter) {
+        // Correct!
+        choice.classList.add('used', 'correct');
+        buildWordFilledLetters.push(letter);
+
+        // Fill the slot
+        const slots = document.querySelectorAll('.letter-slot');
+        slots[expectedIndex].textContent = letter;
+        slots[expectedIndex].classList.add('filled');
+
+        // Check if complete
+        if (buildWordFilledLetters.length === buildWordCurrentWord.letters.length) {
+          createConfetti(5);
+          // Queue bravo then the complete word (audio queue prevents overlap)
+          playAudio('bravo.mp3');
+          playGameWord(buildWordCurrentWord.word.toLowerCase());
+
+          setTimeout(() => {
+            buildWordCurrentRound++;
+            if (buildWordCurrentRound >= BUILD_WORD_TOTAL_ROUNDS) {
+              showBuildWordResults();
+            } else {
+              loadBuildWordRound();
+            }
+          }, 2000);
+        }
+      } else {
+        // Wrong
+        const slots = document.querySelectorAll('.letter-slot');
+        slots[expectedIndex].classList.add('wrong');
+        buildWordMistakes++;
+        playAudio('try-again.mp3');
+        setTimeout(() => slots[expectedIndex].classList.remove('wrong'), 300);
+      }
+    }
+
+    function showBuildWordResults() {
+      const stars = buildWordMistakes === 0 ? 3 : buildWordMistakes <= 3 ? 2 : 1;
+      document.getElementById('build-word-stars-display').textContent = '⭐'.repeat(stars);
+
+      const messages = ['Браво!', 'Много добре!', 'Супер!', 'Отлично!'];
+      document.getElementById('build-word-sofia-message').textContent =
+        messages[Math.floor(Math.random() * messages.length)];
+
+      showScreen('build-word-results-screen');
+      if (stars === 3) createConfetti(20);
+    }
+
+    // =====================
+    // VOWELS VS CONSONANTS GAME (Гласни срещу съгласни)
+    // =====================
+    const BG_VOWELS = ['А', 'Е', 'И', 'О', 'У', 'Ъ', 'Ю', 'Я'];
+    const BG_CONSONANTS = ['Б', 'В', 'Г', 'Д', 'Ж', 'З', 'Й', 'К', 'Л', 'М', 'Н', 'П', 'Р', 'С', 'Т', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ'];
+
+    let sortingCorrect = 0;
+    let sortingWrong = 0;
+    let sortingLetters = [];
+    let sortingCurrentIndex = 0;
+    let sortingAnswering = false;
+    const SORTING_TOTAL_LETTERS = 10;
+
+    function showSortingGame() {
+      playGameTitleAudio('glasni-saglasni');
+      sortingCorrect = 0;
+      sortingWrong = 0;
+      sortingCurrentIndex = 0;
+      sortingAnswering = false;
+
+      // Generate mixed letters for the game
+      const numVowels = 5;
+      const numConsonants = 5;
+      sortingLetters = [];
+      sortingLetters = sortingLetters.concat(shuffle([...BG_VOWELS]).slice(0, numVowels));
+      sortingLetters = sortingLetters.concat(shuffle([...BG_CONSONANTS]).slice(0, numConsonants));
+      sortingLetters = shuffle(sortingLetters);
+
+      showScreen('sorting-game-screen');
+      updateSortingDisplay();
+    }
+
+    function updateSortingDisplay() {
+      const letterEl = document.getElementById('sorting-current-letter');
+      const progressEl = document.getElementById('sorting-progress-text');
+
+      letterEl.textContent = sortingLetters[sortingCurrentIndex];
+      letterEl.className = 'sorting-current-letter';
+      progressEl.textContent = `${sortingCurrentIndex + 1} / ${SORTING_TOTAL_LETTERS}`;
+
+      document.getElementById('sorting-correct').textContent = sortingCorrect;
+      document.getElementById('sorting-wrong').textContent = sortingWrong;
+
+      // Play the letter audio
+      playGameLetterNow(sortingLetters[sortingCurrentIndex]);
+    }
+
+    function answerSorting(answer) {
+      if (sortingAnswering) return;
+      sortingAnswering = true;
+
+      const currentLetter = sortingLetters[sortingCurrentIndex];
+      const isVowel = BG_VOWELS.includes(currentLetter);
+      const correctAnswer = isVowel ? 'vowel' : 'consonant';
+      const letterEl = document.getElementById('sorting-current-letter');
+
+      if (answer === correctAnswer) {
+        // Correct!
+        sortingCorrect++;
+        letterEl.classList.add('correct');
+
+        setTimeout(() => {
+          sortingCurrentIndex++;
+          sortingAnswering = false;
+
+          if (sortingCurrentIndex >= SORTING_TOTAL_LETTERS) {
+            playAudio('bravo.mp3');
+            createConfetti(5);
+            setTimeout(() => showSortingResults(), 800);
+          } else {
+            updateSortingDisplay();
+          }
+        }, 600);
+      } else {
+        // Wrong!
+        sortingWrong++;
+        document.getElementById('sorting-wrong').textContent = sortingWrong;
+        letterEl.classList.add('wrong');
+        playAudio('try-again.mp3');
+
+        // Tell the correct answer
+        setTimeout(() => {
+          playAudio(isVowel ? 'phrase_glasna.mp3' : 'phrase_saglasna.mp3', GAMES_BASE);
+        }, 400);
+
+        // Reset and let them try again with the same letter
+        setTimeout(() => {
+          letterEl.classList.remove('wrong');
+          sortingAnswering = false;
+        }, 1200);
+      }
+    }
+
+    function showSortingResults() {
+      const stars = sortingWrong === 0 ? 3 : sortingWrong <= 3 ? 2 : 1;
+      document.getElementById('sorting-stars-display').textContent = '⭐'.repeat(stars);
+
+      const messages = ['Браво!', 'Много добре!', 'Супер!', 'Отлично!'];
+      document.getElementById('sorting-sofia-message').textContent =
+        messages[Math.floor(Math.random() * messages.length)];
+
+      showScreen('sorting-results-screen');
+      if (stars === 3) createConfetti(20);
+    }
+
+    // =====================
+    // SYLLABLE PUZZLE GAME (Срички пъзел)
+    // =====================
+    const PUZZLE_WORDS = [
+      { word: 'мама', firstHalf: 'ма', secondHalf: 'ма', emoji: '👩' },
+      { word: 'баба', firstHalf: 'ба', secondHalf: 'ба', emoji: '👵' },
+      { word: 'тато', firstHalf: 'та', secondHalf: 'то', emoji: '👨' },
+      { word: 'кола', firstHalf: 'ко', secondHalf: 'ла', emoji: '🚗' },
+      { word: 'риба', firstHalf: 'ри', secondHalf: 'ба', emoji: '🐟' },
+      { word: 'вода', firstHalf: 'во', secondHalf: 'да', emoji: '💧' },
+      { word: 'небе', firstHalf: 'не', secondHalf: 'бе', emoji: '🌤️' },
+      { word: 'луна', firstHalf: 'лу', secondHalf: 'на', emoji: '🌙' },
+      { word: 'коте', firstHalf: 'ко', secondHalf: 'те', emoji: '🐱' },
+      { word: 'куче', firstHalf: 'ку', secondHalf: 'че', emoji: '🐕' },
+      { word: 'пиле', firstHalf: 'пи', secondHalf: 'ле', emoji: '🐤' },
+      { word: 'маса', firstHalf: 'ма', secondHalf: 'са', emoji: '🪑' },
+      { word: 'торта', firstHalf: 'тор', secondHalf: 'та', emoji: '🎂' },
+      { word: 'круша', firstHalf: 'кру', secondHalf: 'ша', emoji: '🍐' },
+      { word: 'диня', firstHalf: 'ди', secondHalf: 'ня', emoji: '🍉' },
+      { word: 'гъба', firstHalf: 'гъ', secondHalf: 'ба', emoji: '🍄' },
+      { word: 'цвете', firstHalf: 'цве', secondHalf: 'те', emoji: '🌸' },
+      { word: 'къща', firstHalf: 'къ', secondHalf: 'ща', emoji: '🏠' },
+      { word: 'ягода', firstHalf: 'яго', secondHalf: 'да', emoji: '🍓' },
+      { word: 'пчела', firstHalf: 'пче', secondHalf: 'ла', emoji: '🐝' }
+    ];
+
+    let puzzleCurrentRound = 0;
+    let puzzleMistakes = 0;
+    let puzzleCurrentWord = null;
+    let puzzleSelectedFirst = null;
+    let puzzleSelectedSecond = null;
+    let puzzleFirstFilled = false;
+    let puzzleSecondFilled = false;
+    const PUZZLE_TOTAL_ROUNDS = 5;
+
+    function showPuzzleGame() {
+      playGameTitleAudio('sricki-pazel');
+      puzzleCurrentRound = 0;
+      puzzleMistakes = 0;
+      showScreen('puzzle-game-screen');
+      loadPuzzleRound();
+    }
+
+    function loadPuzzleRound() {
+      // Update round indicator
+      const indicator = document.getElementById('puzzle-round-indicator');
+      indicator.innerHTML = '';
+      for (let i = 0; i < PUZZLE_TOTAL_ROUNDS; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'round-dot';
+        if (i < puzzleCurrentRound) dot.classList.add('completed');
+        if (i === puzzleCurrentRound) dot.classList.add('current');
+        indicator.appendChild(dot);
+      }
+
+      // Select random word
+      puzzleCurrentWord = PUZZLE_WORDS[Math.floor(Math.random() * PUZZLE_WORDS.length)];
+      puzzleSelectedFirst = null;
+      puzzleSelectedSecond = null;
+      puzzleFirstFilled = false;
+      puzzleSecondFilled = false;
+
+      // Display image
+      document.getElementById('puzzle-target-image').textContent = puzzleCurrentWord.emoji;
+
+      // Display word with slots
+      const displayEl = document.getElementById('puzzle-word-display');
+      displayEl.innerHTML = `
+        <span class="puzzle-syllable-slot" id="puzzle-slot-1"></span>
+        <span class="puzzle-syllable-slot" id="puzzle-slot-2"></span>
+      `;
+
+      // Create first halves (correct + distractors)
+      const firstHalvesEl = document.getElementById('puzzle-first-halves');
+      firstHalvesEl.innerHTML = '';
+      let firstOptions = [puzzleCurrentWord.firstHalf];
+      const firstDistractors = ['ма', 'ко', 'ри', 'ба', 'ку', 'пи', 'во', 'та'];
+      while (firstOptions.length < 3) {
+        const d = firstDistractors[Math.floor(Math.random() * firstDistractors.length)];
+        if (!firstOptions.includes(d)) firstOptions.push(d);
+      }
+      shuffle(firstOptions).forEach(syllable => {
+        const btn = document.createElement('button');
+        btn.className = 'puzzle-syllable first-half';
+        btn.textContent = syllable;
+        btn.onclick = () => handlePuzzleFirstClick(btn, syllable);
+        firstHalvesEl.appendChild(btn);
+      });
+
+      // Create second halves (correct + distractors)
+      const secondHalvesEl = document.getElementById('puzzle-second-halves');
+      secondHalvesEl.innerHTML = '';
+      let secondOptions = [puzzleCurrentWord.secondHalf];
+      const secondDistractors = ['ма', 'ла', 'ба', 'та', 'да', 'на', 'те', 'че'];
+      while (secondOptions.length < 3) {
+        const d = secondDistractors[Math.floor(Math.random() * secondDistractors.length)];
+        if (!secondOptions.includes(d)) secondOptions.push(d);
+      }
+      shuffle(secondOptions).forEach(syllable => {
+        const btn = document.createElement('button');
+        btn.className = 'puzzle-syllable second-half';
+        btn.textContent = syllable;
+        btn.onclick = () => handlePuzzleSecondClick(btn, syllable);
+        secondHalvesEl.appendChild(btn);
+      });
+
+      // Queue the word to play after title and instructions finish
+      speakPuzzleWord();
+    }
+
+    function speakPuzzleWord() {
+      if (puzzleCurrentWord) {
+        playGameWord(puzzleCurrentWord.word);
+      }
+    }
+
+    function handlePuzzleFirstClick(btn, syllable) {
+      if (btn.classList.contains('used') || puzzleFirstFilled) return;
+
+      // Play the syllable audio immediately (user click)
+      playGameSyllableNow(syllable);
+
+      // Deselect previous
+      if (puzzleSelectedFirst) {
+        puzzleSelectedFirst.classList.remove('selected');
+      }
+
+      puzzleSelectedFirst = btn;
+      btn.classList.add('selected');
+
+      // Check if correct
+      if (syllable === puzzleCurrentWord.firstHalf) {
+        btn.classList.add('used', 'correct');
+        btn.classList.remove('selected');
+        document.getElementById('puzzle-slot-1').textContent = syllable;
+        document.getElementById('puzzle-slot-1').classList.add('filled');
+        puzzleFirstFilled = true;
+        puzzleSelectedFirst = null;
+        checkPuzzleComplete();
+      }
+    }
+
+    function handlePuzzleSecondClick(btn, syllable) {
+      if (btn.classList.contains('used') || puzzleSecondFilled) return;
+
+      // Play the syllable audio immediately (user click)
+      playGameSyllableNow(syllable);
+
+      // Deselect previous
+      if (puzzleSelectedSecond) {
+        puzzleSelectedSecond.classList.remove('selected');
+      }
+
+      puzzleSelectedSecond = btn;
+      btn.classList.add('selected');
+
+      // Check if correct
+      if (syllable === puzzleCurrentWord.secondHalf) {
+        btn.classList.add('used', 'correct');
+        btn.classList.remove('selected');
+        document.getElementById('puzzle-slot-2').textContent = syllable;
+        document.getElementById('puzzle-slot-2').classList.add('filled');
+        puzzleSecondFilled = true;
+        puzzleSelectedSecond = null;
+        checkPuzzleComplete();
+      }
+    }
+
+    function checkPuzzleComplete() {
+      if (puzzleFirstFilled && puzzleSecondFilled) {
+        createConfetti(5);
+        // Queue bravo then the complete word (audio queue prevents overlap)
+        playAudio('bravo.mp3');
+        playGameWord(puzzleCurrentWord.word);
+
+        setTimeout(() => {
+          puzzleCurrentRound++;
+          if (puzzleCurrentRound >= PUZZLE_TOTAL_ROUNDS) {
+            showPuzzleResults();
+          } else {
+            loadPuzzleRound();
+          }
+        }, 2000);
+      }
+    }
+
+    function showPuzzleResults() {
+      const stars = puzzleMistakes === 0 ? 3 : puzzleMistakes <= 3 ? 2 : 1;
+      document.getElementById('puzzle-stars-display').textContent = '⭐'.repeat(stars);
+
+      const messages = ['Браво!', 'Много добре!', 'Супер!', 'Отлично!'];
+      document.getElementById('puzzle-sofia-message').textContent =
+        messages[Math.floor(Math.random() * messages.length)];
+
+      showScreen('puzzle-results-screen');
+      if (stars === 3) createConfetti(20);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load game data
+      loadGameData();
+
+      // Touch support for word pronunciation (long press)
+      document.addEventListener('touchstart', (e) => {
+        const btn = e.target.closest('.picture-btn');
+        if (btn) {
+          btn.dataset.touchStart = Date.now();
+        }
+      });
+
+      document.addEventListener('touchend', (e) => {
+        const btn = e.target.closest('.picture-btn');
+        if (btn && btn.dataset.touchStart) {
+          const duration = Date.now() - parseInt(btn.dataset.touchStart);
+          delete btn.dataset.touchStart;
+
+          // Long press = play word
+          if (duration > 500) {
+            e.preventDefault();
+            const wordId = btn.dataset.wordId;
+            const word = gameData.words.find(w => w.id === wordId);
+            if (word) {
+              playAudio(word.audioFile, WORDS_BASE);
+            }
+          }
+        }
+      });
+
+      // Initialize settings UI on load
+      updateSettingsUI();
+    });
+  </script>
+
+  <!-- Core Modules -->
+  <script src="js/core/audio.js"></script>
+  <script src="js/core/ui.js"></script>
+  <script src="js/core/storage.js"></script>
+
+  <!-- Game Base Class -->
+  <script src="js/games/BaseGame.js"></script>
+
+  <!-- Individual Games -->
+  <script src="js/games/PhonicsGame.js"></script>
+  <script src="js/games/VocabGame.js"></script>
+  <script src="js/games/BubbleGame.js"></script>
+  <script src="js/games/DragDropGame.js"></script>
+  <script src="js/games/TrainGame.js"></script>
+  <script src="js/games/BuildWordGame.js"></script>
+  <script src="js/games/SortingGame.js"></script>
+  <script src="js/games/PuzzleGame.js"></script>
+
+  <!-- Main Application -->
+  <script src="js/app.js"></script>
+</body>
+</html>

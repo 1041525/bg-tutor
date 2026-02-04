@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e:*)",
+      "Bash(node:*)",
+      "Bash(del find-*.mp3 ne-zapochva-*.mp3 zapochva-*.mp3)",
+      "WebFetch(domain:journeythroughtoliaschaos.myblog.arts.ac.uk)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "Bash(ls:*)",
+      "Bash(xargs rm:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(del letter_*.mp3)",
+      "Bash(findstr:*)",
+      "Bash(timeout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
