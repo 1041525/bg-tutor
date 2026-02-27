@@ -23,18 +23,29 @@ class SortingGame extends BaseGame {
     this.letters = [];
     this.answering = false;
 
-    // Bulgarian vowels and consonants
-    this.vowels = ['А', 'Е', 'И', 'О', 'У', 'Ъ', 'Ю', 'Я'];
-    this.consonants = ['Б', 'В', 'Г', 'Д', 'Ж', 'З', 'Й', 'К', 'Л', 'М', 'Н', 'П', 'Р', 'С', 'Т', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ'];
+    // Data will be loaded from gameData
+    this.vowels = null;
+    this.consonants = null;
   }
 
   /**
    * Load game data on start
    */
   onStart(options) {
-    if (this.gameData && this.gameData.gameData) {
-      if (this.gameData.gameData.vowels) this.vowels = this.gameData.gameData.vowels;
-      if (this.gameData.gameData.consonants) this.consonants = this.gameData.gameData.consonants;
+    // Load vowels from gameData (required)
+    if (this.gameData && this.gameData.gameData && this.gameData.gameData.vowels) {
+      this.vowels = this.gameData.gameData.vowels;
+    } else {
+      console.error('SortingGame: vowels not found in gameData');
+      this.vowels = [];
+    }
+
+    // Load consonants from gameData (required)
+    if (this.gameData && this.gameData.gameData && this.gameData.gameData.consonants) {
+      this.consonants = this.gameData.gameData.consonants;
+    } else {
+      console.error('SortingGame: consonants not found in gameData');
+      this.consonants = [];
     }
 
     // Reset state
@@ -149,16 +160,22 @@ class SortingGame extends BaseGame {
    * Show results with random message
    */
   onShowResults(stars) {
-    const messages = ['Браво!', 'Много добре!', 'Супер!', 'Отлично!'];
-    const messageEl = document.getElementById('sorting-sofia-message');
+    const messageEl = document.getElementById('sorting-results-msg');
     if (messageEl) {
-      messageEl.textContent = messages[Math.floor(Math.random() * messages.length)];
+      messageEl.textContent = typeof CharacterManager !== 'undefined'
+        ? CharacterManager.getResultMessage('sofi', stars)
+        : 'Браво!';
     }
   }
 }
 
 // Create singleton instance
 const sortingGame = new SortingGame();
+
+// Register with GameRegistry
+if (typeof GameRegistry !== 'undefined') {
+  GameRegistry.register('sorting', sortingGame, { launcher: 'startSortingGame' });
+}
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

@@ -24,8 +24,8 @@ class BubbleGame extends BaseGame {
     this.totalMistakes = 0;
     this.audioCtx = null;
 
-    // Bulgarian letters
-    this.letters = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ю', 'Я'];
+    // Letters will be loaded from gameData
+    this.letters = null;
   }
 
   /**
@@ -95,6 +95,16 @@ class BubbleGame extends BaseGame {
   onStart(options) {
     this.totalMistakes = 0;
     this.isActive = true;
+
+    // Load letters from gameData
+    if (this.gameData && this.gameData.gameData && this.gameData.gameData.alphabet) {
+      this.letters = this.gameData.gameData.alphabet;
+    } else {
+      // Fallback to combined vowels + consonants if alphabet not defined
+      const vowels = this.gameData?.gameData?.vowels || [];
+      const consonants = this.gameData?.gameData?.consonants || [];
+      this.letters = [...vowels, ...consonants];
+    }
   }
 
   /**
@@ -114,6 +124,9 @@ class BubbleGame extends BaseGame {
     this.targetLetter = this.letters[Math.floor(Math.random() * this.letters.length)];
     const targetEl = document.getElementById('bubble-target-letter');
     if (targetEl) targetEl.textContent = this.targetLetter;
+
+    // Read out the target letter after a short delay
+    setTimeout(() => this.audio.playGameLetter(this.targetLetter), 500);
 
     // Create bubbles
     this.createBubbles();
@@ -141,43 +154,24 @@ class BubbleGame extends BaseGame {
       bubbleLetters.push(wrongLetters[Math.floor(Math.random() * wrongLetters.length)]);
     }
 
-    // Shuffle and position bubbles
+    // Shuffle and assign to horizontal lanes to prevent overlap
     const shuffled = this.ui.shuffle(bubbleLetters);
-    const placedBubbles = [];
-    const balloonSize = 85;
-    const containerRect = container.getBoundingClientRect();
-    const minDistance = balloonSize + 15;
+    const totalBubbles = shuffled.length;
+    const laneWidth = 85 / totalBubbles;
 
     shuffled.forEach((letter, index) => {
       const bubble = document.createElement('div');
-      bubble.className = `bubble color-${(index % 6) + 1} floating`;
+      bubble.className = `bubble color-${(index % 6) + 1} falling`;
       bubble.textContent = letter;
       bubble.dataset.letter = letter;
 
-      // Find non-overlapping position
-      let left, top, attempts = 0;
-      const maxAttempts = 50;
-
-      do {
-        left = 8 + Math.random() * 65;
-        top = 5 + Math.random() * 55;
-        attempts++;
-      } while (
-        attempts < maxAttempts &&
-        placedBubbles.some(pos => {
-          const dx = (left - pos.left) * containerRect.width / 100;
-          const dy = (top - pos.top) * containerRect.height / 100;
-          return Math.sqrt(dx * dx + dy * dy) < minDistance;
-        })
-      );
-
-      placedBubbles.push({ left, top });
+      // Each balloon gets its own horizontal lane
+      const left = 5 + laneWidth * index + Math.random() * laneWidth * 0.4;
       bubble.style.left = left + '%';
-      bubble.style.top = top + '%';
 
-      const floatDelay = (Math.random() * 3).toFixed(2);
-      const driftDelay = (Math.random() * 5).toFixed(2);
-      bubble.style.animationDelay = `${floatDelay}s, ${driftDelay}s`;
+      // Stagger fall timing for a stream effect
+      const fallDelay = (index * 0.9 + Math.random() * 0.4).toFixed(2);
+      bubble.style.animationDelay = `${fallDelay}s`;
 
       bubble.onclick = () => this.handleBubblePop(bubble, letter);
       container.appendChild(bubble);
@@ -192,7 +186,7 @@ class BubbleGame extends BaseGame {
 
     if (letter === this.targetLetter) {
       // Correct bubble
-      bubble.classList.remove('floating');
+      bubble.classList.remove('falling');
       bubble.classList.add('popping');
       this.bubbleCorrect++;
 
@@ -232,10 +226,24 @@ class BubbleGame extends BaseGame {
     if (this.totalMistakes <= 3) return 2;
     return 1;
   }
+
+  onShowResults(stars) {
+    const messageEl = document.getElementById('bubble-results-msg');
+    if (messageEl) {
+      messageEl.textContent = typeof CharacterManager !== 'undefined'
+        ? CharacterManager.getResultMessage('krisi', stars)
+        : 'Браво!';
+    }
+  }
 }
 
 // Create singleton instance
 const bubbleGame = new BubbleGame();
+
+// Register with GameRegistry
+if (typeof GameRegistry !== 'undefined') {
+  GameRegistry.register('bubble', bubbleGame, { launcher: 'startBubbleGame' });
+}
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

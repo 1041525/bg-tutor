@@ -21,28 +21,39 @@ class PuzzleGame extends BaseGame {
     this.firstFilled = false;
     this.secondFilled = false;
 
-    this.firstDistractors = ['ма', 'ко', 'ри', 'ба', 'ку', 'пи', 'во', 'та'];
-    this.secondDistractors = ['ма', 'ла', 'ба', 'та', 'да', 'на', 'те', 'че'];
-
-    // Default word list (will be overridden by gameData)
-    this.puzzleWords = [
-      { word: 'мама', firstHalf: 'ма', secondHalf: 'ма', emoji: '👩' },
-      { word: 'баба', firstHalf: 'ба', secondHalf: 'ба', emoji: '👵' },
-      { word: 'кола', firstHalf: 'ко', secondHalf: 'ла', emoji: '🚗' },
-      { word: 'риба', firstHalf: 'ри', secondHalf: 'ба', emoji: '🐟' },
-      { word: 'коте', firstHalf: 'ко', secondHalf: 'те', emoji: '🐱' },
-      { word: 'куче', firstHalf: 'ку', secondHalf: 'че', emoji: '🐕' },
-      { word: 'луна', firstHalf: 'лу', secondHalf: 'на', emoji: '🌙' },
-      { word: 'торта', firstHalf: 'тор', secondHalf: 'та', emoji: '🎂' }
-    ];
+    // Data will be loaded from gameData
+    this.firstDistractors = null;
+    this.secondDistractors = null;
+    this.puzzleWords = null;
   }
 
   /**
    * Load game data on start
    */
   onStart(options) {
-    if (this.gameData && this.gameData.gameData && this.gameData.gameData.puzzleWords) {
-      this.puzzleWords = this.gameData.gameData.puzzleWords;
+    // Load puzzle words from gameData (required)
+    if (this.gameData && this.gameData.gameData && this.gameData.gameData.gameWords) {
+      this.puzzleWords = this.gameData.gameData.gameWords
+        .filter(w => w.tags.includes('puzzle'))
+        .map(w => ({
+          ...w,
+          firstHalf: w.syllables[0],
+          secondHalf: w.syllables[1]
+        }));
+    } else {
+      console.error('PuzzleGame: gameWords not found in gameData');
+      this.puzzleWords = [];
+    }
+
+    // Load puzzle distractors from gameData (required)
+    if (this.gameData && this.gameData.gameData && this.gameData.gameData.puzzleDistractors) {
+      this.firstDistractors = this.gameData.gameData.puzzleDistractors.first;
+      this.secondDistractors = this.gameData.gameData.puzzleDistractors.second;
+    } else {
+      // Fallback to distractor syllables for both
+      const distractors = this.gameData?.gameData?.distractorSyllables || [];
+      this.firstDistractors = distractors;
+      this.secondDistractors = distractors;
     }
   }
 
@@ -170,6 +181,12 @@ class PuzzleGame extends BaseGame {
       this.firstFilled = true;
       this.selectedFirst = null;
       this.checkComplete();
+    } else {
+      // Wrong selection - track mistake
+      this.mistakes++;
+      btn.classList.add('wrong');
+      this.audio.playFeedback('incorrect');
+      setTimeout(() => btn.classList.remove('wrong', 'selected'), 300);
     }
   }
 
@@ -204,6 +221,12 @@ class PuzzleGame extends BaseGame {
       this.secondFilled = true;
       this.selectedSecond = null;
       this.checkComplete();
+    } else {
+      // Wrong selection - track mistake
+      this.mistakes++;
+      btn.classList.add('wrong');
+      this.audio.playFeedback('incorrect');
+      setTimeout(() => btn.classList.remove('wrong', 'selected'), 300);
     }
   }
 
@@ -224,16 +247,22 @@ class PuzzleGame extends BaseGame {
    * Show results with random message
    */
   onShowResults(stars) {
-    const messages = ['Браво!', 'Много добре!', 'Супер!', 'Отлично!'];
-    const messageEl = document.getElementById('puzzle-sofia-message');
+    const messageEl = document.getElementById('puzzle-results-msg');
     if (messageEl) {
-      messageEl.textContent = messages[Math.floor(Math.random() * messages.length)];
+      messageEl.textContent = typeof CharacterManager !== 'undefined'
+        ? CharacterManager.getResultMessage('krisi', stars)
+        : 'Браво!';
     }
   }
 }
 
 // Create singleton instance
 const puzzleGame = new PuzzleGame();
+
+// Register with GameRegistry
+if (typeof GameRegistry !== 'undefined') {
+  GameRegistry.register('puzzle', puzzleGame, { launcher: 'startPuzzleGame' });
+}
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

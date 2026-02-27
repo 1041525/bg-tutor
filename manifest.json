@@ -1,0 +1,30 @@
+{
+  "name": "Замъкът на Софи и Криси",
+  "short_name": "Софи и Криси",
+  "description": "Забавни игри за учене на българските букви и звуци",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#6C5CE7",
+  "theme_color": "#6C5CE7",
+  "lang": "bg",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

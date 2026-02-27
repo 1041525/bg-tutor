@@ -168,10 +168,8 @@ class VocabGame extends BaseGame {
    * Custom correct answer handling
    */
   onCorrect(item, btn) {
-    // Play the correct word audio first
-    if (this.audio && item.audioFile) {
-      this.audio.play(item.audioFile, this.audio.wordsPath);
-    }
+    // Note: Word audio is already played by handleCorrect() when playWordAudio=true
+    // No additional audio needed here
   }
 
   /**
@@ -182,11 +180,24 @@ class VocabGame extends BaseGame {
     if (this.storage) {
       this.storage.incrementVocabGamesPlayed();
     }
+
+    // Character message
+    const messageEl = document.getElementById('vocab-results-msg');
+    if (messageEl) {
+      messageEl.textContent = typeof CharacterManager !== 'undefined'
+        ? CharacterManager.getResultMessage('sofi', stars)
+        : 'Браво!';
+    }
   }
 }
 
 // Create singleton instance
 const vocabGame = new VocabGame();
+
+// Register with GameRegistry
+if (typeof GameRegistry !== 'undefined') {
+  GameRegistry.register('vocab', vocabGame, { launcher: 'startVocabGame' });
+}
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

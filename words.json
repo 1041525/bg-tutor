@@ -69,7 +69,6 @@
     { "id": "gora", "word": "Гора", "emoji": "🌲", "startsWith": "Г", "audioFile": "gora.mp3" },
     { "id": "grozde", "word": "Грозде", "emoji": "🍇", "startsWith": "Г", "audioFile": "grozde.mp3" },
     { "id": "guska", "word": "Гъска", "emoji": "🦆", "startsWith": "Г", "audioFile": "guska.mp3" },
-    { "id": "gitara", "word": "Китара", "emoji": "🎸", "startsWith": "Г", "audioFile": "gitara.mp3" },
     { "id": "gorila", "word": "Горила", "emoji": "🦍", "startsWith": "Г", "audioFile": "gorila.mp3" },
     { "id": "gushter", "word": "Гущер", "emoji": "🦎", "startsWith": "Г", "audioFile": "gushter.mp3" },
 
@@ -104,7 +103,6 @@
 
     { "id": "igla", "word": "Игла", "emoji": "🧵", "startsWith": "И", "audioFile": "igla.mp3" },
     { "id": "iguana", "word": "Игуана", "emoji": "🦎", "startsWith": "И", "audioFile": "iguana.mp3" },
-    { "id": "island", "word": "Остров", "emoji": "🏝️", "startsWith": "И", "audioFile": "island.mp3" },
     { "id": "igloto", "word": "Иглу", "emoji": "🏠", "startsWith": "И", "audioFile": "igloto.mp3" },
 
     { "id": "yorgurt", "word": "Йогурт", "emoji": "🥛", "startsWith": "Й", "audioFile": "yorgurt.mp3" },
@@ -169,7 +167,6 @@
     { "id": "ostrоv", "word": "Остров", "emoji": "🏝️", "startsWith": "О", "audioFile": "ostrov.mp3" },
     { "id": "orange", "word": "Оранжев", "emoji": "🟠", "startsWith": "О", "audioFile": "orange.mp3" },
     { "id": "ogan", "word": "Огън", "emoji": "🔥", "startsWith": "О", "audioFile": "ogan.mp3" },
-    { "id": "ogurets", "word": "Краставица", "emoji": "🥒", "startsWith": "О", "audioFile": "ogurets.mp3" },
     { "id": "oktopod", "word": "Октопод", "emoji": "🐙", "startsWith": "О", "audioFile": "oktopod.mp3" },
 
     { "id": "patka", "word": "Патка", "emoji": "🦆", "startsWith": "П", "audioFile": "patka.mp3" },
@@ -187,7 +184,6 @@
     { "id": "podarаk", "word": "Подарък", "emoji": "🎁", "startsWith": "П", "audioFile": "podarak.mp3" },
     { "id": "planeta", "word": "Планета", "emoji": "🌍", "startsWith": "П", "audioFile": "planeta.mp3" },
     { "id": "portokal", "word": "Портокал", "emoji": "🍊", "startsWith": "П", "audioFile": "portokal.mp3" },
-    { "id": "paten", "word": "Кънки", "emoji": "⛸️", "startsWith": "П", "audioFile": "paten.mp3" },
 
     { "id": "riba", "word": "Риба", "emoji": "🐟", "startsWith": "Р", "audioFile": "riba.mp3" },
     { "id": "roza", "word": "Роза", "emoji": "🌹", "startsWith": "Р", "audioFile": "roza.mp3" },
@@ -223,15 +219,12 @@
     { "id": "topka", "word": "Топка", "emoji": "⚽", "startsWith": "Т", "audioFile": "topka.mp3" },
     { "id": "telefon", "word": "Телефон", "emoji": "📱", "startsWith": "Т", "audioFile": "telefon.mp3" },
     { "id": "televizor", "word": "Телевизор", "emoji": "📺", "startsWith": "Т", "audioFile": "televizor.mp3" },
-    { "id": "tuksedo", "word": "Смокинг", "emoji": "🤵", "startsWith": "Т", "audioFile": "tuksedo.mp3" },
     { "id": "tikva", "word": "Тиква", "emoji": "🎃", "startsWith": "Т", "audioFile": "tikva.mp3" },
-    { "id": "tulip", "word": "Лале", "emoji": "🌷", "startsWith": "Т", "audioFile": "tulip.mp3" },
     { "id": "tukan", "word": "Тукан", "emoji": "🐦", "startsWith": "Т", "audioFile": "tukan.mp3" },
 
     { "id": "ucho", "word": "Ухо", "emoji": "👂", "startsWith": "У", "audioFile": "ucho.mp3" },
     { "id": "ulitsa", "word": "Улица", "emoji": "🛤️", "startsWith": "У", "audioFile": "ulitsa.mp3" },
     { "id": "usta", "word": "Уста", "emoji": "👄", "startsWith": "У", "audioFile": "usta.mp3" },
-    { "id": "utka", "word": "Патица", "emoji": "🦆", "startsWith": "У", "audioFile": "utka.mp3" },
 
     { "id": "flamingo", "word": "Фламинго", "emoji": "🦩", "startsWith": "Ф", "audioFile": "flamingo.mp3" },
     { "id": "futbol", "word": "Футбол", "emoji": "⚽", "startsWith": "Ф", "audioFile": "futbol.mp3" },

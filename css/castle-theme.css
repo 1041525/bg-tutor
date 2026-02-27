@@ -1,0 +1,350 @@
+/* =============================================
+   ЗАМЪКЪТ НА СОФИ И КРИСИ — Castle Theme
+   ============================================= */
+
+/* Google Font loaded in index.html:
+   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+*/
+
+:root {
+  /* Castle Color Palette */
+  --castle-sky-top: #7EC8E3;
+  --castle-sky-bottom: #C5A3D9;
+  --castle-pink: #FFB6C1;
+  --castle-gold: #FFD700;
+  --castle-stone: #E8DCC8;
+  --castle-grass: #7DD87D;
+  --castle-wood: #8B6914;
+
+  /* Character Colors */
+  --sofi-pink: #FF69B4;
+  --sofi-pink-light: #FFB3D9;
+  --sofi-purple: #9B59B6;
+  --sofi-purple-light: #D2B4DE;
+  --krisi-blue: #4A90D9;
+  --krisi-blue-light: #A8D1F0;
+  --krisi-green: #2ECC71;
+
+  /* Functional */
+  --correct: #7DD87D;
+  --incorrect: #FF7979;
+  --text-warm: #4A3728;
+  --text-light: #FFFFFF;
+
+  /* Sizing */
+  --tap-min: 80px;
+  --radius-card: 24px;
+  --radius-btn: 20px;
+  --radius-round: 50%;
+
+  /* Font */
+  --font-family: 'Baloo 2', 'Comic Sans MS', 'Segoe UI', sans-serif;
+}
+
+/* =============================================
+   GLOBAL OVERRIDES
+   ============================================= */
+
+body {
+  font-family: var(--font-family);
+  background: linear-gradient(180deg, var(--castle-sky-top) 0%, var(--castle-sky-bottom) 100%);
+}
+
+.welcome-title {
+  font-family: var(--font-family);
+  font-weight: 800;
+}
+
+/* =============================================
+   WELCOME HEADER — Characters + Title
+   ============================================= */
+
+.castle-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.castle-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--text-light);
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.25);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 0;
+}
+
+.castle-title-sub {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  display: block;
+}
+
+/* Character avatars */
+.castle-character {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.castle-character.sofi {
+  background: linear-gradient(145deg, var(--sofi-pink-light), var(--sofi-pink));
+  box-shadow: 0 4px 15px rgba(255,105,180,0.4);
+  animation: sofiIdle 3s ease-in-out infinite;
+}
+
+.castle-character.krisi {
+  background: linear-gradient(145deg, var(--krisi-blue-light), var(--krisi-blue));
+  box-shadow: 0 4px 15px rgba(74,144,217,0.4);
+  animation: krisiIdle 3s ease-in-out infinite 0.5s;
+}
+
+.castle-character img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.castle-character .char-emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+@keyframes sofiIdle {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}
+
+@keyframes krisiIdle {
+  0%, 100% { transform: translateY(0) rotate(2deg); }
+  50% { transform: translateY(-5px) rotate(-2deg); }
+}
+
+/* =============================================
+   MENU TABS (Games / Lessons toggle)
+   ============================================= */
+
+.menu-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 16px;
+  padding: 4px;
+  margin-bottom: 15px;
+}
+
+.menu-tab {
+  flex: 1;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  font-family: var(--font-family);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.menu-tab.active {
+  background: rgba(255,255,255,0.95);
+  color: var(--text-warm);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.menu-tab:active {
+  transform: scale(0.96);
+}
+
+/* =============================================
+   GAME TILE OVERRIDES (themed)
+   ============================================= */
+
+.game-link {
+  font-family: var(--font-family);
+}
+
+.game-link-title {
+  font-family: var(--font-family);
+}
+
+/* Lesson tile icons */
+.game-link-icon.letters-lesson {
+  background: linear-gradient(145deg, var(--sofi-pink), var(--sofi-purple));
+}
+
+.game-link-icon.syllables-lesson {
+  background: linear-gradient(145deg, var(--krisi-blue), var(--krisi-green));
+}
+
+/* =============================================
+   CASTLE HOME BUTTON (replaces back arrow)
+   ============================================= */
+
+.castle-home-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(5px);
+  border: 2px solid rgba(255,255,255,0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  transition: transform 0.2s, background 0.2s;
+  z-index: 10;
+}
+
+.castle-home-btn:active {
+  transform: scale(0.9);
+  background: rgba(255,255,255,0.5);
+}
+
+/* =============================================
+   RESULTS SCREEN — CHARACTER THEME
+   ============================================= */
+
+.results-character {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  margin: 0 auto 15px;
+  animation: resultsBounce 0.6s ease;
+  overflow: hidden;
+}
+
+.results-character.sofi {
+  background: linear-gradient(145deg, var(--sofi-pink-light), var(--sofi-pink));
+  box-shadow: 0 6px 25px rgba(255,105,180,0.4);
+}
+
+.results-character.krisi {
+  background: linear-gradient(145deg, var(--krisi-blue-light), var(--krisi-blue));
+  box-shadow: 0 6px 25px rgba(74,144,217,0.4);
+}
+
+.results-character img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+@keyframes resultsBounce {
+  0% { transform: scale(0) rotate(-10deg); }
+  50% { transform: scale(1.15) rotate(5deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.results-message {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-light);
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  margin-bottom: 15px;
+  font-family: var(--font-family);
+  padding: 8px 20px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 15px;
+}
+
+.results-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.results-home-btn {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  border: 2px solid rgba(255,255,255,0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.results-home-btn:active {
+  transform: scale(0.9);
+}
+
+/* =============================================
+   DECORATIVE ELEMENTS
+   ============================================= */
+
+/* Animated clouds on welcome screen */
+.castle-clouds {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cloud {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.5;
+  animation: cloudDrift linear infinite;
+}
+
+.cloud:nth-child(1) { top: 5px; animation-duration: 25s; font-size: 1.8rem; }
+.cloud:nth-child(2) { top: 25px; animation-duration: 35s; animation-delay: -10s; font-size: 2.2rem; }
+.cloud:nth-child(3) { top: 15px; animation-duration: 30s; animation-delay: -20s; font-size: 1.5rem; }
+
+@keyframes cloudDrift {
+  from { transform: translateX(-100px); }
+  to { transform: translateX(calc(100vw + 100px)); }
+}
+
+/* =============================================
+   SPARKLE SCREEN TRANSITION
+   ============================================= */
+
+.screen {
+  animation: castleFadeIn 0.35s ease !important;
+}
+
+@keyframes castleFadeIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+
+@media (max-width: 360px) {
+  .castle-title { font-size: 1.4rem; }
+  .castle-character { width: 55px; height: 55px; font-size: 2rem; }
+  .menu-tab { padding: 8px 16px; font-size: 1rem; }
+}

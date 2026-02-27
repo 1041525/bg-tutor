@@ -13,7 +13,19 @@
       "Bash(findstr:*)",
       "Bash(timeout:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(gh repo create:*)",
+      "Bash(gh api:*)",
+      "Bash(for f in js/games/*.js)",
+      "Bash(do echo \"Checking $f...\")",
+      "Bash(echo:*)",
+      "Bash(done)",
+      "Bash(git checkout:*)",
+      "Bash(python -m http.server:*)",
+      "Bash(tree:*)",
+      "Bash(wc:*)",
+      "Bash(GOOGLE_TTS_API_KEY=AIzaSyCxosxWgWun2SZnqT9taIRxxcIkTwGOoPI node tools/generate-audio.js:*)",
+      "Bash(set \"GOOGLE_TTS_API_KEY=AIzaSyCxosxWgWun2SZnqT9taIRxxcIkTwGOoPI\")"
     ]
   }
 }

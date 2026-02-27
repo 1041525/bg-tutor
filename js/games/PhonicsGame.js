@@ -29,7 +29,7 @@ class PhonicsGame extends BaseGame {
   configure(settings) {
     if (settings.numChoices) this.numChoices = settings.numChoices;
     if (settings.showLabels !== undefined) this.showLabels = settings.showLabels;
-    if (settings.filteredLetters) this.filteredLetters = settings.filteredLetters;
+    if ('filteredLetters' in settings) this.filteredLetters = settings.filteredLetters;
   }
 
   /**
@@ -98,8 +98,11 @@ class PhonicsGame extends BaseGame {
    */
   getDistractorWords(count) {
     const allowedLetters = this.filteredLetters || Object.keys(this.gameData.letters);
+    const correctEmoji = this.currentWord ? this.currentWord.emoji : null;
     const distractorPool = this.gameData.words.filter(w =>
-      w.startsWith !== this.currentLetter && allowedLetters.includes(w.startsWith)
+      w.startsWith !== this.currentLetter &&
+      allowedLetters.includes(w.startsWith) &&
+      w.emoji !== correctEmoji
     );
     return this.ui.randomItems(distractorPool, count);
   }
@@ -177,7 +180,7 @@ class PhonicsGame extends BaseGame {
     if (!this.gameData || !this.currentLetter) return;
     const letterData = this.gameData.letters[this.currentLetter];
     if (letterData && letterData.audioFile) {
-      this.audio.play(letterData.audioFile, this.audio.basePath);
+      this.audio.play(letterData.audioFile, this.audio.phonicsPath);
     }
   }
 
@@ -223,11 +226,11 @@ class PhonicsGame extends BaseGame {
       this.audio.playFeedback('incorrect');
       setTimeout(() => this.audio.play(item.audioFile, this.audio.wordsPath), 800);
       if (targetPhrase) {
-        setTimeout(() => this.audio.play(targetPhrase.neZapochva, this.audio.basePath), 1600);
+        setTimeout(() => this.audio.play(targetPhrase.neZapochva, this.audio.phonicsPath), 1600);
       }
       setTimeout(() => this.audio.play(item.audioFile, this.audio.wordsPath), 2800);
       if (actualPhrase) {
-        setTimeout(() => this.audio.play(actualPhrase.zapochva, this.audio.basePath), 3600);
+        setTimeout(() => this.audio.play(actualPhrase.zapochva, this.audio.phonicsPath), 3600);
       }
     } else {
       this.audio.playFeedback('incorrect');
@@ -249,11 +252,24 @@ class PhonicsGame extends BaseGame {
     if (letterDisplay) {
       letterDisplay.textContent = this.currentLetter;
     }
+
+    // Character message
+    const messageEl = document.getElementById('phonics-results-msg');
+    if (messageEl) {
+      messageEl.textContent = typeof CharacterManager !== 'undefined'
+        ? CharacterManager.getResultMessage('sofi', stars)
+        : 'Браво!';
+    }
   }
 }
 
 // Create singleton instance
 const phonicsGame = new PhonicsGame();
+
+// Register with GameRegistry
+if (typeof GameRegistry !== 'undefined') {
+  GameRegistry.register('phonics', phonicsGame, { launcher: 'startPhonicsGame' });
+}
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

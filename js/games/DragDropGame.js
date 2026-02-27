@@ -21,28 +21,20 @@ class DragDropGame extends BaseGame {
     this.selectedUppercase = null;
     this.roundLetters = [];
 
-    // Letter pairs (uppercase/lowercase)
-    this.letterPairs = [
-      { upper: 'А', lower: 'а' }, { upper: 'Б', lower: 'б' }, { upper: 'В', lower: 'в' },
-      { upper: 'Г', lower: 'г' }, { upper: 'Д', lower: 'д' }, { upper: 'Е', lower: 'е' },
-      { upper: 'Ж', lower: 'ж' }, { upper: 'З', lower: 'з' }, { upper: 'И', lower: 'и' },
-      { upper: 'Й', lower: 'й' }, { upper: 'К', lower: 'к' }, { upper: 'Л', lower: 'л' },
-      { upper: 'М', lower: 'м' }, { upper: 'Н', lower: 'н' }, { upper: 'О', lower: 'о' },
-      { upper: 'П', lower: 'п' }, { upper: 'Р', lower: 'р' }, { upper: 'С', lower: 'с' },
-      { upper: 'Т', lower: 'т' }, { upper: 'У', lower: 'у' }, { upper: 'Ф', lower: 'ф' },
-      { upper: 'Х', lower: 'х' }, { upper: 'Ц', lower: 'ц' }, { upper: 'Ч', lower: 'ч' },
-      { upper: 'Ш', lower: 'ш' }, { upper: 'Щ', lower: 'щ' }, { upper: 'Ю', lower: 'ю' },
-      { upper: 'Я', lower: 'я' }
-    ];
+    // Letter pairs will be loaded from gameData
+    this.letterPairs = null;
   }
 
   /**
-   * Load game data if available
+   * Load game data on start
    */
   onStart(options) {
-    // Use letter pairs from gameData if available
+    // Load letter pairs from gameData (required)
     if (this.gameData && this.gameData.gameData && this.gameData.gameData.letterPairs) {
       this.letterPairs = this.gameData.gameData.letterPairs;
+    } else {
+      console.error('DragDropGame: letterPairs not found in gameData');
+      this.letterPairs = [];
     }
   }
 
@@ -154,10 +146,24 @@ class DragDropGame extends BaseGame {
       setTimeout(() => dropZone.classList.remove('wrong'), 300);
     }
   }
+
+  onShowResults(stars) {
+    const messageEl = document.getElementById('dragdrop-results-msg');
+    if (messageEl) {
+      messageEl.textContent = typeof CharacterManager !== 'undefined'
+        ? CharacterManager.getResultMessage('sofi', stars)
+        : 'Браво!';
+    }
+  }
 }
 
 // Create singleton instance
 const dragDropGame = new DragDropGame();
+
+// Register with GameRegistry
+if (typeof GameRegistry !== 'undefined') {
+  GameRegistry.register('dragdrop', dragDropGame, { launcher: 'startDragDropGame' });
+}
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

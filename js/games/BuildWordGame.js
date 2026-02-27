@@ -17,28 +17,38 @@ class BuildWordGame extends BaseGame {
     });
 
     this.filledLetters = [];
-    this.bgAlphabet = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯ'.split('');
 
-    // Default word list (will be overridden by gameData)
-    this.buildWords = [
-      { word: 'СОК', letters: ['С', 'О', 'К'], emoji: '🧃' },
-      { word: 'НОС', letters: ['Н', 'О', 'С'], emoji: '👃' },
-      { word: 'КОН', letters: ['К', 'О', 'Н'], emoji: '🐴' },
-      { word: 'ДОМ', letters: ['Д', 'О', 'М'], emoji: '🏠' },
-      { word: 'РАК', letters: ['Р', 'А', 'К'], emoji: '🦀' },
-      { word: 'КОТ', letters: ['К', 'О', 'Т'], emoji: '🐱' },
-      { word: 'МАК', letters: ['М', 'А', 'К'], emoji: '🌺' },
-      { word: 'КОЛА', letters: ['К', 'О', 'Л', 'А'], emoji: '🚗' },
-      { word: 'РИБА', letters: ['Р', 'И', 'Б', 'А'], emoji: '🐟' }
-    ];
+    // Data will be loaded from gameData
+    this.bgAlphabet = null;
+    this.buildWords = null;
   }
 
   /**
    * Load game data on start
    */
   onStart(options) {
-    if (this.gameData && this.gameData.gameData && this.gameData.gameData.buildWords) {
-      this.buildWords = this.gameData.gameData.buildWords;
+    // Load build words from gameData (required)
+    if (this.gameData && this.gameData.gameData && this.gameData.gameData.gameWords) {
+      this.buildWords = this.gameData.gameData.gameWords
+        .filter(w => w.tags.includes('build'))
+        .map(w => ({
+          ...w,
+          word: w.word.toUpperCase(),
+          letters: w.word.toUpperCase().split('')
+        }));
+    } else {
+      console.error('BuildWordGame: gameWords not found in gameData');
+      this.buildWords = [];
+    }
+
+    // Load alphabet from gameData (required)
+    if (this.gameData && this.gameData.gameData && this.gameData.gameData.alphabet) {
+      this.bgAlphabet = this.gameData.gameData.alphabet;
+    } else {
+      // Fallback to combined vowels + consonants
+      const vowels = this.gameData?.gameData?.vowels || [];
+      const consonants = this.gameData?.gameData?.consonants || [];
+      this.bgAlphabet = [...vowels, ...consonants];
     }
   }
 
@@ -95,7 +105,7 @@ class BuildWordGame extends BaseGame {
     let allLetters = [...this.currentWord.letters];
 
     // Add distractors
-    const numDistractors = Math.max(2, 6 - allLetters.length);
+    const numDistractors = Math.max(2, 4 - allLetters.length);
     while (allLetters.length < this.currentWord.letters.length + numDistractors) {
       const randomLetter = this.bgAlphabet[Math.floor(Math.random() * this.bgAlphabet.length)];
       if (!allLetters.includes(randomLetter) || allLetters.filter(l => l === randomLetter).length < 2) {
@@ -170,16 +180,22 @@ class BuildWordGame extends BaseGame {
    * Show results with random message
    */
   onShowResults(stars) {
-    const messages = ['Браво!', 'Много добре!', 'Супер!', 'Отлично!'];
-    const messageEl = document.getElementById('build-word-sofia-message');
+    const messageEl = document.getElementById('build-word-results-msg');
     if (messageEl) {
-      messageEl.textContent = messages[Math.floor(Math.random() * messages.length)];
+      messageEl.textContent = typeof CharacterManager !== 'undefined'
+        ? CharacterManager.getResultMessage('krisi', stars)
+        : 'Браво!';
     }
   }
 }
 
 // Create singleton instance
 const buildWordGame = new BuildWordGame();
+
+// Register with GameRegistry
+if (typeof GameRegistry !== 'undefined') {
+  GameRegistry.register('buildword', buildWordGame, { launcher: 'startBuildWordGame' });
+}
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

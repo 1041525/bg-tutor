@@ -46,6 +46,9 @@ const App = (function() {
       // Initialize settings UI
       updateSettingsUI();
 
+      // Show welcome screen (hide loading screen)
+      showWelcome();
+
       console.log('App initialized successfully');
     } catch (error) {
       console.error('Failed to initialize app:', error);
@@ -65,7 +68,8 @@ const App = (function() {
         audio: {
           basePath: 'audio/',
           wordsPath: 'audio/words/',
-          gamesPath: 'audio/games/'
+          gamesPath: 'audio/games/',
+          phonicsPath: 'audio/phonics/'
         }
       };
     }
@@ -82,6 +86,9 @@ const App = (function() {
       // Load progress
       tutorData = StorageManager.load();
       progress = tutorData.phonics.letterStars || {};
+
+      // Default to first 6 letters (difficulty 1)
+      settings.filteredLetters = Object.keys(gameData.letters).slice(0, 6);
 
       console.log('Game data loaded:', gameData.words.length, 'words');
     } catch (error) {
@@ -113,38 +120,26 @@ const App = (function() {
       gameData: gameData
     };
 
-    // Set managers on all game instances
-    if (typeof phonicsGame !== 'undefined') {
-      phonicsGame.setManagers(managers);
-      phonicsGame.configure(settings);
-    }
+    // Use GameRegistry if available (new scalable approach)
+    if (typeof GameRegistry !== 'undefined') {
+      GameRegistry.initAll(managers);
+      GameRegistry.bindLaunchers();
 
-    if (typeof vocabGame !== 'undefined') {
-      vocabGame.setManagers(managers);
-    }
-
-    if (typeof bubbleGame !== 'undefined') {
-      bubbleGame.setManagers(managers);
-    }
-
-    if (typeof dragDropGame !== 'undefined') {
-      dragDropGame.setManagers(managers);
-    }
-
-    if (typeof trainGame !== 'undefined') {
-      trainGame.setManagers(managers);
-    }
-
-    if (typeof buildWordGame !== 'undefined') {
-      buildWordGame.setManagers(managers);
-    }
-
-    if (typeof sortingGame !== 'undefined') {
-      sortingGame.setManagers(managers);
-    }
-
-    if (typeof puzzleGame !== 'undefined') {
-      puzzleGame.setManagers(managers);
+      // Configure phonics game with settings
+      GameRegistry.configure('phonics', settings);
+    } else {
+      // Fallback to manual initialization for backwards compatibility
+      if (typeof phonicsGame !== 'undefined') {
+        phonicsGame.setManagers(managers);
+        phonicsGame.configure(settings);
+      }
+      if (typeof vocabGame !== 'undefined') vocabGame.setManagers(managers);
+      if (typeof bubbleGame !== 'undefined') bubbleGame.setManagers(managers);
+      if (typeof dragDropGame !== 'undefined') dragDropGame.setManagers(managers);
+      if (typeof trainGame !== 'undefined') trainGame.setManagers(managers);
+      if (typeof buildWordGame !== 'undefined') buildWordGame.setManagers(managers);
+      if (typeof sortingGame !== 'undefined') sortingGame.setManagers(managers);
+      if (typeof puzzleGame !== 'undefined') puzzleGame.setManagers(managers);
     }
   }
 
@@ -187,6 +182,8 @@ const App = (function() {
   }
 
   function showWelcome() {
+    updateLessonProgress();
+    updateStickerBadge();
     showScreen('welcome-screen');
   }
 
@@ -196,7 +193,7 @@ const App = (function() {
 
   function showLetterSelect() {
     renderLetterButtons();
-    showScreen('letter-select-screen');
+    showScreen('letter-screen');
   }
 
   function showSettings() {
@@ -205,7 +202,245 @@ const App = (function() {
 
   function showStickers() {
     renderStickersDisplay();
-    showScreen('stickers-screen');
+    showScreen('sticker-book-screen');
+  }
+
+
+  function updateStickerBadge() {
+    const badge = document.getElementById('sticker-count-badge');
+    if (badge && typeof StorageManager !== 'undefined') {
+      const unlocked = StorageManager.getUnlockedStickers();
+      badge.textContent = unlocked ? unlocked.length : 0;
+    }
+  }
+
+  // =====================
+  // LESSON NAVIGATION
+  // =====================
+
+  function switchMenuTab(tab) {
+    const gamesMenu = document.getElementById('games-menu');
+    const lessonsMenu = document.getElementById('lessons-menu');
+    const tabGames = document.getElementById('tab-games');
+    const tabLessons = document.getElementById('tab-lessons');
+
+    if (!gamesMenu || !lessonsMenu) return;
+
+    if (tab === 'games') {
+      gamesMenu.classList.remove('hidden');
+      lessonsMenu.classList.add('hidden');
+      if (tabGames) tabGames.classList.add('active');
+      if (tabLessons) tabLessons.classList.remove('active');
+    } else {
+      gamesMenu.classList.add('hidden');
+      lessonsMenu.classList.remove('hidden');
+      if (tabGames) tabGames.classList.remove('active');
+      if (tabLessons) tabLessons.classList.add('active');
+    }
+  }
+
+  function showLessonSelect() {
+    renderStagesGrid();
+    showScreen('lesson-select-screen');
+  }
+
+  function renderStagesGrid() {
+    const container = document.getElementById('stages-container');
+    if (!container || typeof LessonData === 'undefined') return;
+
+    const progress = LetterLesson.getProgress();
+    container.innerHTML = '';
+
+    LessonData.stages.forEach(stage => {
+      const stageCard = document.createElement('div');
+      stageCard.className = 'stage-card';
+
+      const completedCount = stage.letters.filter(l => progress[l]?.completed).length;
+
+      stageCard.innerHTML = `
+        <div class="stage-header">
+          <div class="stage-number" style="background: ${stage.color}">${stage.id}</div>
+          <div class="stage-info">
+            <div class="stage-name">${stage.name}</div>
+            <div class="stage-desc">${stage.description} (${completedCount}/${stage.letters.length})</div>
+          </div>
+        </div>
+        <div class="stage-letters" id="stage-${stage.id}-letters"></div>
+      `;
+
+      container.appendChild(stageCard);
+
+      // Render letter buttons for this stage
+      const lettersGrid = document.getElementById(`stage-${stage.id}-letters`);
+      stage.letters.forEach((letter, index) => {
+        const letterData = LessonData.letters[letter];
+        const isCompleted = progress[letter]?.completed;
+        const isUnlocked = isLetterUnlockedForLessons(letter, progress);
+
+        const btn = document.createElement('button');
+        btn.className = 'stage-letter-btn';
+        if (isCompleted) btn.classList.add('completed');
+        if (!isUnlocked) btn.classList.add('locked');
+
+        // Assign colors based on position
+        const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#AA96DA'];
+        btn.style.background = `linear-gradient(145deg, ${colors[index % colors.length]}, ${adjustColor(colors[index % colors.length], -20)})`;
+        btn.style.color = ['#FFE66D', '#95E1D3'].includes(colors[index % colors.length]) ? '#333' : '#fff';
+
+        btn.textContent = letter;
+
+        if (isUnlocked) {
+          btn.onclick = () => startLetterLesson(letter);
+        }
+
+        lettersGrid.appendChild(btn);
+      });
+    });
+  }
+
+  function isLetterUnlockedForLessons(letter, progress) {
+    const allLetters = LessonData.getAllLettersInOrder();
+    const index = allLetters.indexOf(letter);
+
+    // First letter is always unlocked
+    if (index === 0) return true;
+
+    // Unlock if previous letter is completed
+    const prevLetter = allLetters[index - 1];
+    return progress[prevLetter]?.completed === true;
+  }
+
+  function adjustColor(hex, amount) {
+    // Simple color adjustment for gradients
+    const num = parseInt(hex.replace('#', ''), 16);
+    const r = Math.max(0, Math.min(255, (num >> 16) + amount));
+    const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
+    const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
+    return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+  }
+
+  function startLetterLesson(letter) {
+    if (typeof letterLesson !== 'undefined') {
+      const managers = {
+        audio: AudioManager,
+        ui: UIManager,
+        storage: StorageManager,
+        gameData: gameData
+      };
+      letterLesson.setManagers(managers);
+      letterLesson.start(letter);
+    } else {
+      console.error('LetterLesson not loaded');
+    }
+  }
+
+  function updateLessonProgress() {
+    // Update letter progress
+    const letterProgressFill = document.getElementById('letters-progress');
+    if (letterProgressFill && typeof LessonData !== 'undefined') {
+      const letterProgress = LetterLesson.getProgress();
+      const totalLetters = LessonData.getAllLettersInOrder().length;
+      const completedLetters = Object.keys(letterProgress).filter(l => letterProgress[l]?.completed).length;
+      const letterPercent = (completedLetters / totalLetters) * 100;
+      letterProgressFill.style.width = `${letterPercent}%`;
+    }
+
+    // Update syllable progress
+    const syllableProgressFill = document.getElementById('syllables-progress');
+    if (syllableProgressFill && typeof SyllableData !== 'undefined') {
+      const syllableProgress = SyllableLesson.getProgress();
+      const totalSyllables = SyllableData.getAllSyllablesInOrder().length;
+      const completedSyllables = Object.keys(syllableProgress).filter(s => syllableProgress[s]?.completed).length;
+      const syllablePercent = (completedSyllables / totalSyllables) * 100;
+      syllableProgressFill.style.width = `${syllablePercent}%`;
+    }
+  }
+
+  // =====================
+  // SYLLABLE LESSON NAVIGATION
+  // =====================
+
+  function showSyllableLessonSelect() {
+    renderSyllableStagesGrid();
+    showScreen('syllable-select-screen');
+  }
+
+  function renderSyllableStagesGrid() {
+    const container = document.getElementById('syllable-stages-container');
+    if (!container || typeof SyllableData === 'undefined') return;
+
+    const progress = SyllableLesson.getProgress();
+    container.innerHTML = '';
+
+    SyllableData.stages.forEach(stage => {
+      const stageCard = document.createElement('div');
+      stageCard.className = 'stage-card';
+
+      const completedCount = stage.syllables.filter(s => progress[s.syllable]?.completed).length;
+
+      stageCard.innerHTML = `
+        <div class="stage-header">
+          <div class="stage-number" style="background: ${stage.color}">${stage.id}</div>
+          <div class="stage-info">
+            <div class="stage-name">${stage.name}</div>
+            <div class="stage-desc">${stage.description} (${completedCount}/${stage.syllables.length})</div>
+          </div>
+        </div>
+        <div class="stage-letters" id="syllable-stage-${stage.id}"></div>
+      `;
+
+      container.appendChild(stageCard);
+
+      // Render syllable buttons
+      const syllablesGrid = document.getElementById(`syllable-stage-${stage.id}`);
+      stage.syllables.forEach((sylData, index) => {
+        const isCompleted = progress[sylData.syllable]?.completed;
+        const isUnlocked = isSyllableUnlockedForLessons(sylData.syllable, progress);
+
+        const btn = document.createElement('button');
+        btn.className = 'stage-letter-btn';
+        if (isCompleted) btn.classList.add('completed');
+        if (!isUnlocked) btn.classList.add('locked');
+
+        const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#AA96DA'];
+        btn.style.background = `linear-gradient(145deg, ${colors[index % colors.length]}, ${adjustColor(colors[index % colors.length], -20)})`;
+        btn.style.color = ['#FFE66D', '#95E1D3'].includes(colors[index % colors.length]) ? '#333' : '#fff';
+        btn.style.fontSize = '0.9rem';
+
+        btn.textContent = sylData.syllable.replace('-', '');
+
+        if (isUnlocked) {
+          btn.onclick = () => startSyllableLesson(sylData.syllable);
+        }
+
+        syllablesGrid.appendChild(btn);
+      });
+    });
+  }
+
+  function isSyllableUnlockedForLessons(syllable, progress) {
+    const allSyllables = SyllableData.getAllSyllablesInOrder();
+    const index = allSyllables.indexOf(syllable);
+
+    if (index === 0) return true;
+
+    const prevSyllable = allSyllables[index - 1];
+    return progress[prevSyllable]?.completed === true;
+  }
+
+  function startSyllableLesson(syllable) {
+    if (typeof syllableLesson !== 'undefined') {
+      const managers = {
+        audio: AudioManager,
+        ui: UIManager,
+        storage: StorageManager,
+        gameData: gameData
+      };
+      syllableLesson.setManagers(managers);
+      syllableLesson.start(syllable);
+    } else {
+      console.error('SyllableLesson not loaded');
+    }
   }
 
   // =====================
@@ -217,7 +452,8 @@ const App = (function() {
     if (!grid || !gameData) return;
 
     grid.innerHTML = '';
-    const letters = Object.keys(gameData.letters);
+    const allLetters = Object.keys(gameData.letters);
+    const letters = settings.filteredLetters || allLetters;
 
     letters.forEach(letter => {
       const btn = document.createElement('button');
@@ -239,6 +475,14 @@ const App = (function() {
     } else {
       console.error('PhonicsGame not loaded');
     }
+  }
+
+  function startRandomPhonicsGame() {
+    if (!gameData) return;
+    const allLetters = Object.keys(gameData.letters);
+    const pool = settings.filteredLetters || allLetters;
+    const letter = pool[Math.floor(Math.random() * pool.length)];
+    startPhonicsGame(letter);
   }
 
   function startVocabGame() {
@@ -303,7 +547,7 @@ const App = (function() {
 
   function updateSettingsUI() {
     // Show labels toggle
-    const labelsToggle = document.getElementById('show-labels-toggle');
+    const labelsToggle = document.getElementById('toggle-labels');
     if (labelsToggle) {
       labelsToggle.classList.toggle('active', settings.showLabels);
     }
@@ -316,7 +560,7 @@ const App = (function() {
 
   function toggleShowLabels() {
     settings.showLabels = !settings.showLabels;
-    const toggle = document.getElementById('show-labels-toggle');
+    const toggle = document.getElementById('toggle-labels');
     if (toggle) toggle.classList.toggle('active', settings.showLabels);
 
     if (typeof phonicsGame !== 'undefined') {
@@ -516,21 +760,111 @@ const App = (function() {
   }
 
   // =====================
+  // ADDITIONAL FUNCTIONS FOR HTML COMPATIBILITY
+  // =====================
+
+  function goBackFromSettings() {
+    showScreen('welcome-screen');
+  }
+
+  function toggleSetting(setting) {
+    if (setting === 'showLabels') {
+      toggleShowLabels();
+    }
+  }
+
+  function setDistractors(num) {
+    setNumChoices(num);
+  }
+
+  function setDifficulty(level) {
+    settings.difficulty = level;
+    document.querySelectorAll('.difficulty-option').forEach(opt => {
+      opt.classList.toggle('active', parseInt(opt.dataset.value) === level);
+    });
+    // Update filtered letters based on difficulty
+    if (gameData && gameData.letters) {
+      const allLetters = Object.keys(gameData.letters);
+      if (level === 1) {
+        settings.filteredLetters = allLetters.slice(0, 6);
+      } else if (level === 2) {
+        settings.filteredLetters = allLetters.slice(0, 12);
+      } else if (level === 3) {
+        settings.filteredLetters = allLetters.slice(0, 18);
+      } else {
+        settings.filteredLetters = null; // All letters
+      }
+    }
+    if (typeof phonicsGame !== 'undefined') {
+      phonicsGame.configure(settings);
+    }
+  }
+
+  function resetSettings() {
+    settings.showLabels = false;
+    settings.numChoices = 4;
+    settings.difficulty = 1;
+    settings.filteredLetters = null;
+    updateSettingsUI();
+  }
+
+  function playInstruction() {
+    if (typeof phonicsGame !== 'undefined' && phonicsGame.currentLetter) {
+      phonicsGame.playInstruction();
+    }
+  }
+
+  function playVocabWord() {
+    if (typeof vocabGame !== 'undefined') {
+      vocabGame.playCurrentWord();
+    }
+  }
+
+  function speakTrainWord() {
+    if (typeof trainGame !== 'undefined') {
+      trainGame.speakWord();
+    }
+  }
+
+  function speakBuildWord() {
+    if (typeof buildWordGame !== 'undefined') {
+      buildWordGame.speakWord();
+    }
+  }
+
+  function speakPuzzleWord() {
+    if (typeof puzzleGame !== 'undefined') {
+      puzzleGame.speakWord();
+    }
+  }
+
+  // =====================
   // LEGACY COMPATIBILITY
   // =====================
 
   // These functions maintain compatibility with existing onclick handlers in HTML
 
-  // Make functions globally available
+  // Navigation
   window.showScreen = showScreen;
   window.showWelcome = showWelcome;
   window.showGameSelect = showGameSelect;
   window.showLetterSelect = showLetterSelect;
+  window.showLetterSelection = showLetterSelect; // Alias
   window.showSettings = showSettings;
   window.showStickers = showStickers;
+  window.showStickerBook = showStickers; // Alias
+  window.goBackFromSettings = goBackFromSettings;
+
+  // Lesson Navigation
+  window.switchMenuTab = switchMenuTab;
+  window.showLessonSelect = showLessonSelect;
+  window.startLetterLesson = startLetterLesson;
+  window.showSyllableLessonSelect = showSyllableLessonSelect;
+  window.startSyllableLesson = startSyllableLesson;
 
   // Game launchers
   window.startGame = startPhonicsGame;
+  window.startRandomPhonicsGame = startRandomPhonicsGame;
   window.showVocabGame = startVocabGame;
   window.showBubbleGame = startBubbleGame;
   window.showDragDropGame = startDragDropGame;
@@ -541,13 +875,25 @@ const App = (function() {
 
   // Settings
   window.toggleShowLabels = toggleShowLabels;
+  window.toggleSetting = toggleSetting;
   window.setNumChoices = setNumChoices;
+  window.setDistractors = setDistractors;
+  window.setDifficulty = setDifficulty;
+  window.resetSettings = resetSettings;
+
+  // Audio playback
+  window.playInstruction = playInstruction;
+  window.playVocabWord = playVocabWord;
+  window.speakTrainWord = speakTrainWord;
+  window.speakBuildWord = speakBuildWord;
+  window.speakPuzzleWord = speakPuzzleWord;
 
   // Stickers
   window.checkAndAwardStickers = checkAndAwardStickers;
   window.closeStickerPopup = closeStickerPopup;
+  window.hideNewStickerNotification = closeStickerPopup; // Alias
 
-  // Sorting game answer (special case - needs global)
+  // Sorting game answer
   window.answerSorting = (answer) => {
     if (typeof sortingGame !== 'undefined') {
       sortingGame.answerSorting(answer);
@@ -564,6 +910,7 @@ const App = (function() {
     showSettings,
     showStickers,
     startPhonicsGame,
+    startRandomPhonicsGame,
     startVocabGame,
     startBubbleGame,
     startDragDropGame,
@@ -574,6 +921,12 @@ const App = (function() {
     toggleShowLabels,
     setNumChoices,
     checkAndAwardStickers,
+    // Lesson functions
+    switchMenuTab,
+    showLessonSelect,
+    startLetterLesson,
+    showSyllableLessonSelect,
+    startSyllableLesson,
     getConfig: () => config,
     getGameData: () => gameData,
     getSettings: () => settings,

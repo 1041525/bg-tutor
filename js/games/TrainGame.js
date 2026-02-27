@@ -17,31 +17,30 @@ class TrainGame extends BaseGame {
     });
 
     this.filledSlots = [];
-    this.distractorSyllables = ['ма', 'ба', 'ла', 'ти', 'ко', 'во', 'ни', 'ре', 'са', 'до'];
 
-    // Default word list (will be overridden by gameData)
-    this.trainWords = [
-      { word: 'мама', syllables: ['ма', 'ма'], emoji: '👩' },
-      { word: 'баба', syllables: ['ба', 'ба'], emoji: '👵' },
-      { word: 'тато', syllables: ['та', 'то'], emoji: '👨' },
-      { word: 'кола', syllables: ['ко', 'ла'], emoji: '🚗' },
-      { word: 'риба', syllables: ['ри', 'ба'], emoji: '🐟' },
-      { word: 'коте', syllables: ['ко', 'те'], emoji: '🐱' },
-      { word: 'куче', syllables: ['ку', 'че'], emoji: '🐕' },
-      { word: 'слон', syllables: ['слон'], emoji: '🐘' },
-      { word: 'мечка', syllables: ['меч', 'ка'], emoji: '🐻' }
-    ];
+    // Data will be loaded from gameData
+    this.distractorSyllables = null;
+    this.trainWords = null;
   }
 
   /**
    * Load game data on start
    */
   onStart(options) {
-    if (this.gameData && this.gameData.gameData && this.gameData.gameData.trainWords) {
-      this.trainWords = this.gameData.gameData.trainWords;
+    // Load train words from gameData (required)
+    if (this.gameData && this.gameData.gameData && this.gameData.gameData.gameWords) {
+      this.trainWords = this.gameData.gameData.gameWords.filter(w => w.tags.includes('train'));
+    } else {
+      console.error('TrainGame: gameWords not found in gameData');
+      this.trainWords = [];
     }
+
+    // Load distractor syllables from gameData (required)
     if (this.gameData && this.gameData.gameData && this.gameData.gameData.distractorSyllables) {
       this.distractorSyllables = this.gameData.gameData.distractorSyllables;
+    } else {
+      console.error('TrainGame: distractorSyllables not found in gameData');
+      this.distractorSyllables = [];
     }
   }
 
@@ -170,16 +169,22 @@ class TrainGame extends BaseGame {
    * Show results with random message
    */
   onShowResults(stars) {
-    const messages = ['Браво!', 'Много добре!', 'Супер!', 'Отлично!'];
-    const messageEl = document.getElementById('train-sofia-message');
+    const messageEl = document.getElementById('train-results-msg');
     if (messageEl) {
-      messageEl.textContent = messages[Math.floor(Math.random() * messages.length)];
+      messageEl.textContent = typeof CharacterManager !== 'undefined'
+        ? CharacterManager.getResultMessage('krisi', stars)
+        : 'Браво!';
     }
   }
 }
 
 // Create singleton instance
 const trainGame = new TrainGame();
+
+// Register with GameRegistry
+if (typeof GameRegistry !== 'undefined') {
+  GameRegistry.register('train', trainGame, { launcher: 'startTrainGame' });
+}
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

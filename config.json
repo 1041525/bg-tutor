@@ -3,6 +3,7 @@
     "basePath": "audio/",
     "wordsPath": "audio/words/",
     "gamesPath": "audio/games/",
+    "phonicsPath": "audio/phonics/",
     "feedback": {
       "correct": "bravo.mp3",
       "incorrect": "try-again.mp3"

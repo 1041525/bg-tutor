@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate PWA Icons</title></head>
+<body>
+<h2>PWA Icon Generator</h2>
+<p>Right-click each canvas and "Save image as..." to the <code>icons/</code> folder.</p>
+<div>
+  <h3>icon-192.png</h3>
+  <canvas id="c192" width="192" height="192"></canvas>
+</div>
+<div>
+  <h3>icon-512.png</h3>
+  <canvas id="c512" width="512" height="512"></canvas>
+</div>
+<script>
+function drawIcon(canvas) {
+  const s = canvas.width;
+  const ctx = canvas.getContext('2d');
+  const scale = s / 512;
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, s, s);
+  grad.addColorStop(0, '#6C5CE7');
+  grad.addColorStop(1, '#a29bfe');
+
+  // Rounded rect
+  const r = 96 * scale;
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.lineTo(s - r, 0);
+  ctx.quadraticCurveTo(s, 0, s, r);
+  ctx.lineTo(s, s - r);
+  ctx.quadraticCurveTo(s, s, s - r, s);
+  ctx.lineTo(r, s);
+  ctx.quadraticCurveTo(0, s, 0, s - r);
+  ctx.lineTo(0, r);
+  ctx.quadraticCurveTo(0, 0, r, 0);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Castle towers
+  ctx.fillStyle = '#ffeaa7';
+  ctx.fillRect(120*scale, 140*scale, 60*scale, 200*scale);
+  ctx.fillRect(226*scale, 100*scale, 60*scale, 240*scale);
+  ctx.fillRect(332*scale, 140*scale, 60*scale, 200*scale);
+
+  // Crenellations
+  ctx.fillStyle = '#fdcb6e';
+  [112,140,168].forEach(x => ctx.fillRect(x*scale, 120*scale, 20*scale, 30*scale));
+  [218,246,274].forEach(x => ctx.fillRect(x*scale, 80*scale, 20*scale, 30*scale));
+  [324,352,380].forEach(x => ctx.fillRect(x*scale, 120*scale, 20*scale, 30*scale));
+
+  // Wall
+  ctx.fillStyle = '#ffeaa7';
+  ctx.fillRect(160*scale, 240*scale, 192*scale, 100*scale);
+
+  // Door
+  ctx.fillStyle = '#6C5CE7';
+  ctx.beginPath();
+  ctx.arc(256*scale, 280*scale, 30*scale, Math.PI, 0);
+  ctx.lineTo(286*scale, 340*scale);
+  ctx.lineTo(226*scale, 340*scale);
+  ctx.fill();
+
+  // Windows
+  ctx.fillStyle = '#74b9ff';
+  ctx.beginPath(); ctx.arc(200*scale, 270*scale, 12*scale, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(312*scale, 270*scale, 12*scale, 0, Math.PI*2); ctx.fill();
+
+  // Emojis
+  ctx.font = `${56*scale}px sans-serif`;
+  ctx.fillText('👸', 170*scale, 410*scale);
+  ctx.fillText('👦', 290*scale, 410*scale);
+
+  // Title
+  ctx.font = `bold ${36*scale}px sans-serif`;
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'center';
+  ctx.fillText('СК', 256*scale, 470*scale);
+}
+
+drawIcon(document.getElementById('c192'));
+drawIcon(document.getElementById('c512'));
+</script>
+</body>
+</html>

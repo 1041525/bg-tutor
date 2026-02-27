@@ -1,7 +1,7 @@
 {
   "мама": {
     "text": "мама",
-    "file": "mama.mp3"
+    "file": "word_mama.mp3"
   },
   "syl_ма": {
     "text": "ма",
@@ -9,7 +9,7 @@
   },
   "баба": {
     "text": "баба",
-    "file": "baba.mp3"
+    "file": "word_baba.mp3"
   },
   "syl_ба": {
     "text": "ба",
@@ -17,7 +17,7 @@
   },
   "тато": {
     "text": "тато",
-    "file": "tato.mp3"
+    "file": "word_tato.mp3"
   },
   "syl_та": {
     "text": "та",
@@ -29,7 +29,7 @@
   },
   "дядо": {
     "text": "дядо",
-    "file": "dyado.mp3"
+    "file": "word_dyado.mp3"
   },
   "syl_дя": {
     "text": "дя",
@@ -41,7 +41,7 @@
   },
   "кола": {
     "text": "кола",
-    "file": "kola.mp3"
+    "file": "word_kola.mp3"
   },
   "syl_ко": {
     "text": "ко",
@@ -53,7 +53,7 @@
   },
   "вода": {
     "text": "вода",
-    "file": "voda.mp3"
+    "file": "word_voda.mp3"
   },
   "syl_во": {
     "text": "во",
@@ -65,7 +65,7 @@
   },
   "риба": {
     "text": "риба",
-    "file": "riba.mp3"
+    "file": "word_riba.mp3"
   },
   "syl_ри": {
     "text": "ри",
@@ -73,7 +73,7 @@
   },
   "коте": {
     "text": "коте",
-    "file": "kote.mp3"
+    "file": "word_kote.mp3"
   },
   "syl_те": {
     "text": "те",
@@ -81,7 +81,7 @@
   },
   "куче": {
     "text": "куче",
-    "file": "kuche.mp3"
+    "file": "word_kuche.mp3"
   },
   "syl_ку": {
     "text": "ку",
@@ -93,7 +93,7 @@
   },
   "пиле": {
     "text": "пиле",
-    "file": "pile.mp3"
+    "file": "word_pile.mp3"
   },
   "syl_пи": {
     "text": "пи",
@@ -105,7 +105,7 @@
   },
   "слон": {
     "text": "слон",
-    "file": "slon.mp3"
+    "file": "word_slon.mp3"
   },
   "syl_слон": {
     "text": "слон",
@@ -113,7 +113,7 @@
   },
   "мечка": {
     "text": "мечка",
-    "file": "mechka.mp3"
+    "file": "word_mechka.mp3"
   },
   "syl_меч": {
     "text": "меч",
@@ -125,7 +125,7 @@
   },
   "лъв": {
     "text": "лъв",
-    "file": "lav.mp3"
+    "file": "word_lav.mp3"
   },
   "syl_лъв": {
     "text": "лъв",
@@ -133,7 +133,7 @@
   },
   "заек": {
     "text": "заек",
-    "file": "zaek.mp3"
+    "file": "word_zaek.mp3"
   },
   "syl_за": {
     "text": "за",
@@ -145,7 +145,7 @@
   },
   "небе": {
     "text": "небе",
-    "file": "nebe.mp3"
+    "file": "word_nebe.mp3"
   },
   "syl_не": {
     "text": "не",
@@ -157,7 +157,7 @@
   },
   "слънце": {
     "text": "слънце",
-    "file": "slantse.mp3"
+    "file": "word_slantse.mp3"
   },
   "syl_слън": {
     "text": "слън",
@@ -169,7 +169,7 @@
   },
   "луна": {
     "text": "луна",
-    "file": "luna.mp3"
+    "file": "word_luna.mp3"
   },
   "syl_лу": {
     "text": "лу",
@@ -181,7 +181,7 @@
   },
   "цвете": {
     "text": "цвете",
-    "file": "tsvete.mp3"
+    "file": "word_tsvete.mp3"
   },
   "syl_цве": {
     "text": "цве",
@@ -189,7 +189,7 @@
   },
   "ябълка": {
     "text": "ябълка",
-    "file": "yabalka.mp3"
+    "file": "word_yabalka.mp3"
   },
   "syl_ябъл": {
     "text": "ябъл",
@@ -197,7 +197,7 @@
   },
   "круша": {
     "text": "круша",
-    "file": "krusha.mp3"
+    "file": "word_krusha.mp3"
   },
   "syl_кру": {
     "text": "кру",
@@ -209,7 +209,7 @@
   },
   "банан": {
     "text": "банан",
-    "file": "banan.mp3"
+    "file": "word_banan.mp3"
   },
   "syl_нан": {
     "text": "нан",
@@ -217,7 +217,7 @@
   },
   "диня": {
     "text": "диня",
-    "file": "dinya.mp3"
+    "file": "word_dinya.mp3"
   },
   "syl_ди": {
     "text": "ди",
@@ -229,7 +229,7 @@
   },
   "торта": {
     "text": "торта",
-    "file": "torta.mp3"
+    "file": "word_torta.mp3"
   },
   "syl_тор": {
     "text": "тор",
@@ -237,7 +237,7 @@
   },
   "сладолед": {
     "text": "сладолед",
-    "file": "sladoled.mp3"
+    "file": "word_sladoled.mp3"
   },
   "syl_сла": {
     "text": "сла",
@@ -249,71 +249,71 @@
   },
   "сок": {
     "text": "сок",
-    "file": "sok.mp3"
+    "file": "word_sok.mp3"
   },
   "нос": {
     "text": "нос",
-    "file": "nos.mp3"
+    "file": "word_nos.mp3"
   },
   "кон": {
     "text": "кон",
-    "file": "kon.mp3"
+    "file": "word_kon.mp3"
   },
   "сол": {
     "text": "сол",
-    "file": "sol.mp3"
+    "file": "word_sol.mp3"
   },
   "мед": {
     "text": "мед",
-    "file": "med.mp3"
+    "file": "word_med.mp3"
   },
   "дом": {
     "text": "дом",
-    "file": "dom.mp3"
+    "file": "word_dom.mp3"
   },
   "сир": {
     "text": "сир",
-    "file": "sir.mp3"
+    "file": "word_sir.mp3"
   },
   "рак": {
     "text": "рак",
-    "file": "rak.mp3"
+    "file": "word_rak.mp3"
   },
   "кот": {
     "text": "кот",
-    "file": "kot.mp3"
+    "file": "word_kot.mp3"
   },
   "пес": {
     "text": "пес",
-    "file": "pes.mp3"
+    "file": "word_pes.mp3"
   },
   "мак": {
     "text": "мак",
-    "file": "mak.mp3"
+    "file": "word_mak.mp3"
   },
   "зъб": {
     "text": "зъб",
-    "file": "zab.mp3"
+    "file": "word_zab.mp3"
   },
   "нож": {
     "text": "нож",
-    "file": "nozh.mp3"
+    "file": "word_nozh.mp3"
   },
   "миш": {
     "text": "миш",
-    "file": "mish.mp3"
+    "file": "word_mish.mp3"
   },
   "дар": {
     "text": "дар",
-    "file": "dar.mp3"
+    "file": "word_dar.mp3"
   },
   "чай": {
     "text": "чай",
-    "file": "chay.mp3"
+    "file": "word_chay.mp3"
   },
   "маса": {
     "text": "маса",
-    "file": "masa.mp3"
+    "file": "word_masa.mp3"
   },
   "syl_са": {
     "text": "са",
@@ -321,7 +321,7 @@
   },
   "гъба": {
     "text": "гъба",
-    "file": "gaba.mp3"
+    "file": "word_gaba.mp3"
   },
   "syl_гъ": {
     "text": "гъ",
@@ -329,7 +329,7 @@
   },
   "къща": {
     "text": "къща",
-    "file": "kashta.mp3"
+    "file": "word_kashta.mp3"
   },
   "syl_къ": {
     "text": "къ",
@@ -341,7 +341,7 @@
   },
   "ягода": {
     "text": "ягода",
-    "file": "yagoda.mp3"
+    "file": "word_yagoda.mp3"
   },
   "syl_яго": {
     "text": "яго",
@@ -349,7 +349,7 @@
   },
   "пчела": {
     "text": "пчела",
-    "file": "pchela.mp3"
+    "file": "word_pchela.mp3"
   },
   "syl_пче": {
     "text": "пче",
@@ -503,14 +503,6 @@
     "text": "Звуков мач",
     "file": "game_gamezvukovmach.mp3"
   },
-  "game_game-zvukov-mach-instr": {
-    "text": "Намери думата по звук!",
-    "file": "game_gamezvukovmachinstr.mp3"
-  },
-  "game_game-nameri-kartinkata": {
-    "text": "Намери картинката",
-    "file": "game_gamenamerikartinkata.mp3"
-  },
   "game_game-nameri-kartinkata-instr": {
     "text": "Свържи думата с картинката!",
     "file": "game_gamenamerikartinkatainstr.mp3"
@@ -518,10 +510,6 @@
   "game_game-spukay-balona": {
     "text": "Спукай балона",
     "file": "game_gamespukaybalona.mp3"
-  },
-  "game_game-spukay-balona-instr": {
-    "text": "Намери правилната буква!",
-    "file": "game_gamespukaybalonainstr.mp3"
   },
   "game_game-svarzhi-bukvite": {
     "text": "Свържи буквите",

@@ -9,6 +9,7 @@ const AudioManager = (function() {
     basePath: 'audio/',
     wordsPath: 'audio/words/',
     gamesPath: 'audio/games/',
+    phonicsPath: 'audio/phonics/',
     feedback: {
       correct: 'bravo.mp3',
       incorrect: 'try-again.mp3'
@@ -217,12 +218,14 @@ const AudioManager = (function() {
     audio.onended = () => {
       isPlayingAudio = false;
       currentAudio = null;
+      processQueue();
     };
 
     audio.onerror = () => {
       console.error('Audio load error:', { file, path: basePath + file });
       isPlayingAudio = false;
       currentAudio = null;
+      processQueue();
     };
 
     audio.play().catch(e => {
@@ -231,6 +234,7 @@ const AudioManager = (function() {
       if (text) speak(text);
       isPlayingAudio = false;
       currentAudio = null;
+      processQueue();
     });
 
     return audio;
@@ -265,7 +269,7 @@ const AudioManager = (function() {
    * @param {boolean} immediate - Play immediately (true) or queued (false)
    */
   function playGameWord(word, immediate = false) {
-    const filename = bgToLatin(word) + '.mp3';
+    const filename = 'word_' + bgToLatin(word) + '.mp3';
     return immediate ? playNow(filename, config.gamesPath) : play(filename, config.gamesPath);
   }
 
@@ -286,6 +290,19 @@ const AudioManager = (function() {
    */
   function playGameLetter(letter, immediate = false) {
     const filename = 'letter_' + bgToLatin(letter.toLowerCase()) + '.mp3';
+
+    // Pre-check audio viability; fall back to speech if file is too short
+    const testAudio = new Audio(config.gamesPath + filename);
+    testAudio.addEventListener('loadedmetadata', function() {
+      if (testAudio.duration < 0.3) {
+        stop();
+        speakLetter(letter);
+      }
+    });
+    testAudio.addEventListener('error', function() {
+      speakLetter(letter);
+    });
+
     return immediate ? playNow(filename, config.gamesPath) : play(filename, config.gamesPath);
   }
 
@@ -298,7 +315,11 @@ const AudioManager = (function() {
     const titleFile = 'game_game' + sanitizedId + '.mp3';
     const instrFile = 'game_game' + sanitizedId + 'instr.mp3';
     playNow(titleFile, config.gamesPath);
-    play(instrFile, config.gamesPath);
+
+    // Check instruction file exists before queuing
+    const test = new Audio(config.gamesPath + instrFile);
+    test.oncanplaythrough = () => play(instrFile, config.gamesPath);
+    test.onerror = () => {}; // Skip silently if missing
   }
 
   /**
@@ -310,7 +331,7 @@ const AudioManager = (function() {
     const upperLetter = letter.toUpperCase();
     const letterData = gameData.letters[upperLetter];
     if (letterData && letterData.audioFile) {
-      play(letterData.audioFile, config.basePath);
+      play(letterData.audioFile, config.phonicsPath);
     } else {
       speak(letter);
     }
@@ -335,7 +356,8 @@ const AudioManager = (function() {
     // Expose config paths for compatibility
     get basePath() { return config.basePath; },
     get wordsPath() { return config.wordsPath; },
-    get gamesPath() { return config.gamesPath; }
+    get gamesPath() { return config.gamesPath; },
+    get phonicsPath() { return config.phonicsPath; }
   };
 })();
 
