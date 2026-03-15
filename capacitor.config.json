@@ -1,0 +1,8 @@
+{
+  "appId": "com.bgtutor.sofikrisi",
+  "appName": "Софи и Криси",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

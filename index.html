@@ -19,10 +19,10 @@
 <body>
   <!-- Loading Screen -->
   <div id="loading-screen" class="screen active">
-    <div class="loading">👸 Зареждане... 👦</div>
+    <div class="loading">Зареждане...</div>
   </div>
 
-  <!-- Welcome Screen — Tile Menu -->
+  <!-- Welcome Screen -->
   <div id="welcome-screen" class="screen">
     <!-- Decorative clouds -->
     <div class="castle-clouds">
@@ -34,7 +34,7 @@
     <!-- Sticker Book Button -->
     <div class="welcome-top-section">
       <button class="sticker-album-btn" onclick="showStickers()">
-        <span class="sticker-album-icon">📒</span>
+        <span class="sticker-album-icon">&#11088;</span>
         <span class="sticker-album-badge" id="sticker-count-badge">0</span>
       </button>
     </div>
@@ -42,135 +42,36 @@
     <!-- Header: Characters + Title -->
     <div class="castle-header">
       <div class="castle-character sofi" id="char-sofi">
-        <span class="char-emoji">👸</span>
+        <span class="char-emoji">&#128120;</span>
       </div>
       <h1 class="welcome-title castle-title">Замъкът на<span class="castle-title-sub">Софи и Криси</span></h1>
       <div class="castle-character krisi" id="char-krisi">
-        <span class="char-emoji">👦</span>
+        <span class="char-emoji">&#128102;</span>
       </div>
     </div>
 
-    <!-- Tab Toggle: Games / Lessons -->
-    <div class="menu-tabs">
-      <button class="menu-tab active" id="tab-games" onclick="switchMenuTab('games')">Игри</button>
-      <button class="menu-tab" id="tab-lessons" onclick="switchMenuTab('lessons')">Уроци</button>
-    </div>
-
-    <!-- Games Grid -->
+    <!-- Games Grid (no tabs) -->
     <div class="game-menu" id="games-menu">
       <button class="game-link" onclick="startRandomPhonicsGame()">
-        <div class="game-link-icon phonics">🔊</div>
+        <div class="game-link-icon phonics">&#128266;</div>
         <div class="game-link-text">
           <span class="game-link-title">Звуков мач</span>
         </div>
       </button>
       <button class="game-link" onclick="showVocabGame()">
-        <div class="game-link-icon vocab">🖼️</div>
+        <div class="game-link-icon vocab">&#128444;&#65039;</div>
         <div class="game-link-text">
           <span class="game-link-title">Намери картинката</span>
         </div>
       </button>
-      <button class="game-link" onclick="showBubbleGame()">
-        <div class="game-link-icon bubble-game">🎈</div>
-        <div class="game-link-text">
-          <span class="game-link-title">Спукай балона</span>
-        </div>
-      </button>
-      <button class="game-link" onclick="showTrainGame()">
-        <div class="game-link-icon train">🚂</div>
-        <div class="game-link-text">
-          <span class="game-link-title">Звуков влак</span>
-        </div>
-      </button>
-      <button class="game-link" onclick="showBuildWordGame()">
-        <div class="game-link-icon build">🔠</div>
-        <div class="game-link-text">
-          <span class="game-link-title">Събери думата</span>
-        </div>
-      </button>
-      <button class="game-link" onclick="showPuzzleGame()">
-        <div class="game-link-icon puzzle">🧩</div>
-        <div class="game-link-text">
-          <span class="game-link-title">Срички пъзел</span>
-        </div>
-      </button>
-    </div>
-
-    <!-- Lessons Grid -->
-    <div class="game-menu hidden" id="lessons-menu">
-      <button class="game-link" onclick="showLessonSelect()">
-        <div class="game-link-icon letters-lesson">🔤</div>
-        <div class="game-link-text">
-          <span class="game-link-title">Буквите</span>
-          <span class="game-link-desc">Научи всяка буква</span>
-        </div>
-      </button>
-      <button class="game-link" onclick="showSyllableLessonSelect()">
-        <div class="game-link-icon syllables-lesson">🧩</div>
-        <div class="game-link-text">
-          <span class="game-link-title">Сричките</span>
-          <span class="game-link-desc">Сглоби звуците</span>
-        </div>
-      </button>
-    </div>
-  </div>
-
-  <!-- Letter Lessons Selection Screen -->
-  <div id="lesson-select-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
-    <h1 class="welcome-title">Научи буквите</h1>
-    <div class="stages-container" id="stages-container">
-      <!-- Stages will be rendered dynamically -->
-    </div>
-  </div>
-
-  <!-- Letter Lesson Screen -->
-  <div id="lesson-screen" class="screen">
-    <button class="castle-home-btn" onclick="showLessonSelect()">🏠</button>
-    <div class="lesson-container">
-      <div class="lesson-phase-indicator" id="lesson-phase">
-        <span class="phase-dot active"></span>
-        <span class="phase-dot"></span>
-        <span class="phase-dot"></span>
-      </div>
-      <div class="lesson-letter-display" id="lesson-letter-display"></div>
-      <div class="lesson-content" id="lesson-content">
-        <!-- Content populated by LetterLesson.js -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Syllable Lessons Selection Screen -->
-  <div id="syllable-select-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
-    <h1 class="welcome-title">Научи сричките</h1>
-    <div class="stages-container" id="syllable-stages-container">
-      <!-- Syllable stages will be rendered dynamically -->
-    </div>
-  </div>
-
-  <!-- Syllable Lesson Screen -->
-  <div id="syllable-lesson-screen" class="screen">
-    <button class="castle-home-btn" onclick="showSyllableLessonSelect()">🏠</button>
-    <div class="lesson-container">
-      <div class="lesson-phase-indicator" id="syllable-lesson-phase">
-        <span class="phase-dot active"></span>
-        <span class="phase-dot"></span>
-        <span class="phase-dot"></span>
-      </div>
-      <div class="syllable-lesson-display" id="syllable-lesson-display"></div>
-      <div class="lesson-content" id="syllable-lesson-content">
-        <!-- Content populated by SyllableLesson.js -->
-      </div>
     </div>
   </div>
 
   <!-- Settings Screen -->
   <div id="settings-screen" class="screen">
-    <button class="castle-home-btn" onclick="goBackFromSettings()">🏠</button>
+    <button class="castle-home-btn" onclick="goBackFromSettings()">&#127968;</button>
     <h1 class="welcome-title">Настройки</h1>
     <div class="settings-container">
-      <!-- Display Group -->
       <div class="settings-group">
         <div class="settings-group-header">Показване</div>
         <div class="setting-item">
@@ -182,13 +83,12 @@
         </div>
         <div class="setting-preview">
           <div class="preview-card">
-            <div class="preview-emoji">🐱</div>
+            <div class="preview-emoji">&#128049;</div>
             <div class="preview-label" id="preview-label">котка</div>
           </div>
         </div>
       </div>
 
-      <!-- Gameplay Group -->
       <div class="settings-group">
         <div class="settings-group-header">Игра</div>
         <div class="setting-item">
@@ -216,14 +116,13 @@
         </div>
       </div>
 
-      <!-- Reset Button -->
       <button class="reset-btn" onclick="resetSettings()">Върни първоначалните настройки</button>
     </div>
   </div>
 
   <!-- Letter Selection Screen -->
   <div id="letter-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
+    <button class="castle-home-btn" onclick="showWelcome()">&#127968;</button>
     <button class="settings-btn" onclick="showSettings()">
       <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
     </button>
@@ -233,7 +132,7 @@
 
   <!-- Game Screen -->
   <div id="game-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
+    <button class="castle-home-btn" onclick="showWelcome()">&#127968;</button>
     <div class="game-container">
       <div class="sound-display" id="current-letter"></div>
       <button class="speaker-btn" onclick="playInstruction()">
@@ -248,21 +147,21 @@
   <div id="results-screen" class="screen">
     <div class="results-container">
       <div class="results-character sofi" id="phonics-results-char">
-        <span class="char-emoji">👸</span>
+        <span class="char-emoji">&#128120;</span>
       </div>
       <div class="results-letter" id="results-letter"></div>
       <div class="stars-display" id="stars-display"></div>
       <div class="results-message" id="phonics-results-msg"></div>
       <div class="results-actions">
         <button class="continue-btn" id="results-continue-btn" onclick="startRandomPhonicsGame()">Още!</button>
-        <button class="results-home-btn" onclick="showWelcome()">🏠</button>
+        <button class="results-home-btn" onclick="showWelcome()">&#127968;</button>
       </div>
     </div>
   </div>
 
   <!-- Vocabulary Game Screen -->
   <div id="vocab-game-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
+    <button class="castle-home-btn" onclick="showWelcome()">&#127968;</button>
     <div class="game-container">
       <div class="vocab-word-display" id="vocab-word-display"></div>
       <button class="speaker-btn vocab-speaker" onclick="playVocabWord()">
@@ -277,90 +176,21 @@
   <div id="vocab-results-screen" class="screen">
     <div class="results-container">
       <div class="results-character sofi">
-        <span class="char-emoji">👸</span>
+        <span class="char-emoji">&#128120;</span>
       </div>
       <div class="vocab-results-title">Намери картинката</div>
       <div class="stars-display" id="vocab-stars-display"></div>
       <div class="results-message" id="vocab-results-msg"></div>
       <div class="results-actions">
         <button class="continue-btn" onclick="showVocabGame()">Още!</button>
-        <button class="results-home-btn" onclick="showWelcome()">🏠</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bubble Pop Game Screen -->
-  <div id="bubble-game-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
-    <div class="game-container">
-      <div class="bubble-target">
-        Намери буквата
-        <span class="bubble-target-letter" id="bubble-target-letter">А</span>
-      </div>
-      <div class="bubble-score">
-        <div class="bubble-score-item">Верни: <span id="bubble-correct">0</span></div>
-        <div class="bubble-score-item">Грешки: <span id="bubble-wrong">0</span></div>
-      </div>
-      <div class="bubble-game-container" id="bubble-container"></div>
-      <div class="round-indicator" id="bubble-round-indicator"></div>
-    </div>
-  </div>
-
-  <!-- Bubble Pop Results Screen -->
-  <div id="bubble-results-screen" class="screen">
-    <div class="results-container">
-      <div class="results-character krisi">
-        <span class="char-emoji">👦</span>
-      </div>
-      <div class="vocab-results-title">Спукай балона</div>
-      <div class="stars-display" id="bubble-stars-display"></div>
-      <div class="results-message" id="bubble-results-msg"></div>
-      <div class="results-actions">
-        <button class="continue-btn" onclick="showBubbleGame()">Още!</button>
-        <button class="results-home-btn" onclick="showWelcome()">🏠</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Drag & Drop Game Screen -->
-  <div id="dragdrop-game-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
-    <div class="game-container">
-      <div class="dragdrop-instruction">Свържи голямата с малката буква</div>
-      <div class="dragdrop-container">
-        <div class="dragdrop-section">
-          <div class="dragdrop-section-label">Големи букви</div>
-          <div class="dragdrop-row" id="uppercase-row"></div>
-        </div>
-        <div class="dragdrop-divider"></div>
-        <div class="dragdrop-section">
-          <div class="dragdrop-section-label">Малки букви</div>
-          <div class="dragdrop-row" id="lowercase-row"></div>
-        </div>
-      </div>
-      <div class="round-indicator" id="dragdrop-round-indicator"></div>
-    </div>
-  </div>
-
-  <!-- Drag & Drop Results Screen -->
-  <div id="dragdrop-results-screen" class="screen">
-    <div class="results-container">
-      <div class="results-character sofi">
-        <span class="char-emoji">👸</span>
-      </div>
-      <div class="vocab-results-title">Свържи буквите</div>
-      <div class="stars-display" id="dragdrop-stars-display"></div>
-      <div class="results-message" id="dragdrop-results-msg"></div>
-      <div class="results-actions">
-        <button class="continue-btn" onclick="showDragDropGame()">Още!</button>
-        <button class="results-home-btn" onclick="showWelcome()">🏠</button>
+        <button class="results-home-btn" onclick="showWelcome()">&#127968;</button>
       </div>
     </div>
   </div>
 
   <!-- Sticker Book Screen -->
   <div id="sticker-book-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
+    <button class="castle-home-btn" onclick="showWelcome()">&#127968;</button>
     <h1 class="welcome-title">Моите стикери</h1>
     <div class="sticker-book-stats" id="sticker-stats"></div>
     <div class="sticker-book-container">
@@ -387,155 +217,6 @@
     </div>
   </div>
 
-  <!-- Sound Train Game Screen -->
-  <div id="train-game-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
-    <div class="game-container">
-      <div class="train-instruction">Построй думата от срички!</div>
-      <div class="train-target-word" id="train-target-word" onclick="speakTrainWord()">🔊 ма-ма</div>
-      <button class="speaker-btn" onclick="speakTrainWord()">
-        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-      </button>
-      <div class="train-track" id="train-track"></div>
-      <div class="syllable-cards" id="syllable-cards"></div>
-      <div class="round-indicator" id="train-round-indicator"></div>
-    </div>
-  </div>
-
-  <!-- Sound Train Results Screen -->
-  <div id="train-results-screen" class="screen">
-    <div class="results-container">
-      <div class="results-character krisi">
-        <span class="char-emoji">👦</span>
-      </div>
-      <div class="vocab-results-title">Звуков влак</div>
-      <div class="stars-display" id="train-stars-display"></div>
-      <div class="results-message" id="train-results-msg"></div>
-      <div class="results-actions">
-        <button class="continue-btn" onclick="showTrainGame()">Още!</button>
-        <button class="results-home-btn" onclick="showWelcome()">🏠</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Build the Word Game Screen -->
-  <div id="build-word-game-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
-    <div class="game-container">
-      <div class="build-word-container">
-        <div class="build-word-image" id="build-word-image" onclick="speakBuildWord()">🍎</div>
-        <button class="speaker-btn" onclick="speakBuildWord()">
-          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-        </button>
-        <div class="build-word-slots" id="build-word-slots"></div>
-        <div class="letter-choices" id="letter-choices"></div>
-        <div class="round-indicator" id="build-word-round-indicator"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Build the Word Results Screen -->
-  <div id="build-word-results-screen" class="screen">
-    <div class="results-container">
-      <div class="results-character krisi">
-        <span class="char-emoji">👦</span>
-      </div>
-      <div class="vocab-results-title">Събери думата</div>
-      <div class="stars-display" id="build-word-stars-display"></div>
-      <div class="results-message" id="build-word-results-msg"></div>
-      <div class="results-actions">
-        <button class="continue-btn" onclick="showBuildWordGame()">Още!</button>
-        <button class="results-home-btn" onclick="showWelcome()">🏠</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Vowels vs Consonants Game Screen -->
-  <div id="sorting-game-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
-    <div class="game-container">
-      <div class="sorting-game-container">
-        <div class="sorting-instruction">Гласна или съгласна?</div>
-        <div class="sorting-progress">
-          <span id="sorting-progress-text">1 / 10</span>
-        </div>
-        <div class="sorting-current-letter" id="sorting-current-letter">А</div>
-        <div class="sorting-choices">
-          <button class="sorting-choice vowel-choice" onclick="answerSorting('vowel')">
-            <span class="choice-emoji">🔴</span>
-            <span class="choice-label">Гласна</span>
-          </button>
-          <button class="sorting-choice consonant-choice" onclick="answerSorting('consonant')">
-            <span class="choice-emoji">🔵</span>
-            <span class="choice-label">Съгласна</span>
-          </button>
-        </div>
-        <div class="sorting-score-mini">
-          <span>✓ <span id="sorting-correct">0</span></span>
-          <span>✗ <span id="sorting-wrong">0</span></span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Vowels vs Consonants Results Screen -->
-  <div id="sorting-results-screen" class="screen">
-    <div class="results-container">
-      <div class="results-character sofi">
-        <span class="char-emoji">👸</span>
-      </div>
-      <div class="vocab-results-title">Гласни и съгласни</div>
-      <div class="stars-display" id="sorting-stars-display"></div>
-      <div class="results-message" id="sorting-results-msg"></div>
-      <div class="results-actions">
-        <button class="continue-btn" onclick="showSortingGame()">Още!</button>
-        <button class="results-home-btn" onclick="showWelcome()">🏠</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Syllable Puzzle Game Screen -->
-  <div id="puzzle-game-screen" class="screen">
-    <button class="castle-home-btn" onclick="showWelcome()">🏠</button>
-    <div class="game-container">
-      <div class="puzzle-game-container">
-        <div class="puzzle-instruction">Свържи половинките на думата!</div>
-        <div class="puzzle-target-image" id="puzzle-target-image" onclick="speakPuzzleWord()">🏠</div>
-        <button class="speaker-btn" onclick="speakPuzzleWord()">
-          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-        </button>
-        <div class="puzzle-word-display" id="puzzle-word-display"></div>
-        <div class="puzzle-columns">
-          <div class="puzzle-column">
-            <div class="puzzle-column-label">Начало</div>
-            <div id="puzzle-first-halves"></div>
-          </div>
-          <div class="puzzle-column">
-            <div class="puzzle-column-label">Край</div>
-            <div id="puzzle-second-halves"></div>
-          </div>
-        </div>
-        <div class="round-indicator" id="puzzle-round-indicator"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Syllable Puzzle Results Screen -->
-  <div id="puzzle-results-screen" class="screen">
-    <div class="results-container">
-      <div class="results-character krisi">
-        <span class="char-emoji">👦</span>
-      </div>
-      <div class="vocab-results-title">Срички пъзел</div>
-      <div class="stars-display" id="puzzle-stars-display"></div>
-      <div class="results-message" id="puzzle-results-msg"></div>
-      <div class="results-actions">
-        <button class="continue-btn" onclick="showPuzzleGame()">Още!</button>
-        <button class="results-home-btn" onclick="showWelcome()">🏠</button>
-      </div>
-    </div>
-  </div>
-
   <!-- New Sticker Notification -->
   <div id="sticker-notification" class="sticker-notification hidden">
     <div class="sticker-notification-content">
@@ -546,6 +227,7 @@
       <button class="sticker-notification-btn" onclick="hideNewStickerNotification()">Супер!</button>
     </div>
   </div>
+
   <!-- Core Modules -->
   <script src="js/core/utils.js"></script>
   <script src="js/core/audio.js"></script>
@@ -557,21 +239,9 @@
   <script src="js/games/GameRegistry.js"></script>
   <script src="js/games/BaseGame.js"></script>
 
-  <!-- Individual Games (self-register with GameRegistry) -->
+  <!-- Games -->
   <script src="js/games/PhonicsGame.js"></script>
   <script src="js/games/VocabGame.js"></script>
-  <script src="js/games/BubbleGame.js"></script>
-  <script src="js/games/DragDropGame.js"></script>
-  <script src="js/games/TrainGame.js"></script>
-  <script src="js/games/BuildWordGame.js"></script>
-  <script src="js/games/SortingGame.js"></script>
-  <script src="js/games/PuzzleGame.js"></script>
-
-  <!-- Lesson Modules -->
-  <script src="js/lessons/lessonData.js"></script>
-  <script src="js/lessons/LetterLesson.js"></script>
-  <script src="js/lessons/syllableData.js"></script>
-  <script src="js/lessons/SyllableLesson.js"></script>
 
   <!-- Main Application -->
   <script src="js/app.js"></script>

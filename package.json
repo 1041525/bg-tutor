@@ -1,0 +1,28 @@
+{
+  "name": "bg-tutor",
+  "version": "1.0.0",
+  "description": "Bulgarian phonics game for children",
+  "scripts": {
+    "start": "npx http-server . -p 8080",
+    "build": "mkdir -p www && cp -r index.html manifest.json config.json words.json service-worker.js css js icons audio www/",
+    "cap:sync": "npm run build && npx cap sync",
+    "cap:open": "npx cap open android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1041525/bg-tutor.git"
+  },
+  "keywords": [
+    "bulgarian",
+    "phonics",
+    "education",
+    "children"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/android": "^8.2.0",
+    "@capacitor/cli": "^8.2.0",
+    "@capacitor/core": "^8.2.0"
+  }
+}

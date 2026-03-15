@@ -1,63 +1,38 @@
 /**
- * Bulgarian Phonics Tutor - Main Application
- * Entry point that initializes all modules and handles navigation
+ * Bulgarian Phonics Tutor - Main Application (MVP)
+ * Only Phonics Game + Vocab Game
  */
 
 const App = (function() {
-  // Configuration
   let config = null;
   let gameData = null;
 
-  // Settings
   let settings = {
     showLabels: false,
     numChoices: 4,
     filteredLetters: null
   };
 
-  // Progress data
   let progress = {};
   let tutorData = null;
 
-  // Audio paths
   const WORDS_BASE = 'audio/words/';
-  const GAMES_BASE = 'audio/games/';
 
-  /**
-   * Initialize the application
-   */
   async function init() {
     try {
-      // Load configuration
       await loadConfig();
-
-      // Load game data
       await loadGameData();
-
-      // Initialize core modules
       initModules();
-
-      // Initialize games
       initGames();
-
-      // Set up event listeners
       setupEventListeners();
-
-      // Initialize settings UI
       updateSettingsUI();
-
-      // Show welcome screen (hide loading screen)
       showWelcome();
-
       console.log('App initialized successfully');
     } catch (error) {
       console.error('Failed to initialize app:', error);
     }
   }
 
-  /**
-   * Load configuration from config.json
-   */
   async function loadConfig() {
     try {
       const response = await fetch('config.json');
@@ -75,21 +50,13 @@ const App = (function() {
     }
   }
 
-  /**
-   * Load game data from words.json
-   */
   async function loadGameData() {
     try {
       const response = await fetch('words.json');
       gameData = await response.json();
-
-      // Load progress
       tutorData = StorageManager.load();
       progress = tutorData.phonics.letterStars || {};
-
-      // Default to first 6 letters (difficulty 1)
       settings.filteredLetters = Object.keys(gameData.letters).slice(0, 6);
-
       console.log('Game data loaded:', gameData.words.length, 'words');
     } catch (error) {
       console.error('Failed to load game data:', error);
@@ -97,21 +64,12 @@ const App = (function() {
     }
   }
 
-  /**
-   * Initialize core modules
-   */
   function initModules() {
-    // Initialize AudioManager
     if (config && config.audio) {
       AudioManager.init(config.audio, gameData);
     }
-
-    // StorageManager is already initialized
   }
 
-  /**
-   * Initialize all games with shared managers
-   */
   function initGames() {
     const managers = {
       audio: AudioManager,
@@ -120,34 +78,20 @@ const App = (function() {
       gameData: gameData
     };
 
-    // Use GameRegistry if available (new scalable approach)
     if (typeof GameRegistry !== 'undefined') {
       GameRegistry.initAll(managers);
       GameRegistry.bindLaunchers();
-
-      // Configure phonics game with settings
       GameRegistry.configure('phonics', settings);
     } else {
-      // Fallback to manual initialization for backwards compatibility
       if (typeof phonicsGame !== 'undefined') {
         phonicsGame.setManagers(managers);
         phonicsGame.configure(settings);
       }
       if (typeof vocabGame !== 'undefined') vocabGame.setManagers(managers);
-      if (typeof bubbleGame !== 'undefined') bubbleGame.setManagers(managers);
-      if (typeof dragDropGame !== 'undefined') dragDropGame.setManagers(managers);
-      if (typeof trainGame !== 'undefined') trainGame.setManagers(managers);
-      if (typeof buildWordGame !== 'undefined') buildWordGame.setManagers(managers);
-      if (typeof sortingGame !== 'undefined') sortingGame.setManagers(managers);
-      if (typeof puzzleGame !== 'undefined') puzzleGame.setManagers(managers);
     }
   }
 
-  /**
-   * Set up event listeners
-   */
   function setupEventListeners() {
-    // Touch support for word pronunciation (long press)
     document.addEventListener('touchstart', (e) => {
       const btn = e.target.closest('.picture-btn');
       if (btn) {
@@ -182,13 +126,8 @@ const App = (function() {
   }
 
   function showWelcome() {
-    updateLessonProgress();
     updateStickerBadge();
     showScreen('welcome-screen');
-  }
-
-  function showGameSelect() {
-    showScreen('game-select-screen');
   }
 
   function showLetterSelect() {
@@ -205,241 +144,11 @@ const App = (function() {
     showScreen('sticker-book-screen');
   }
 
-
   function updateStickerBadge() {
     const badge = document.getElementById('sticker-count-badge');
     if (badge && typeof StorageManager !== 'undefined') {
       const unlocked = StorageManager.getUnlockedStickers();
       badge.textContent = unlocked ? unlocked.length : 0;
-    }
-  }
-
-  // =====================
-  // LESSON NAVIGATION
-  // =====================
-
-  function switchMenuTab(tab) {
-    const gamesMenu = document.getElementById('games-menu');
-    const lessonsMenu = document.getElementById('lessons-menu');
-    const tabGames = document.getElementById('tab-games');
-    const tabLessons = document.getElementById('tab-lessons');
-
-    if (!gamesMenu || !lessonsMenu) return;
-
-    if (tab === 'games') {
-      gamesMenu.classList.remove('hidden');
-      lessonsMenu.classList.add('hidden');
-      if (tabGames) tabGames.classList.add('active');
-      if (tabLessons) tabLessons.classList.remove('active');
-    } else {
-      gamesMenu.classList.add('hidden');
-      lessonsMenu.classList.remove('hidden');
-      if (tabGames) tabGames.classList.remove('active');
-      if (tabLessons) tabLessons.classList.add('active');
-    }
-  }
-
-  function showLessonSelect() {
-    renderStagesGrid();
-    showScreen('lesson-select-screen');
-  }
-
-  function renderStagesGrid() {
-    const container = document.getElementById('stages-container');
-    if (!container || typeof LessonData === 'undefined') return;
-
-    const progress = LetterLesson.getProgress();
-    container.innerHTML = '';
-
-    LessonData.stages.forEach(stage => {
-      const stageCard = document.createElement('div');
-      stageCard.className = 'stage-card';
-
-      const completedCount = stage.letters.filter(l => progress[l]?.completed).length;
-
-      stageCard.innerHTML = `
-        <div class="stage-header">
-          <div class="stage-number" style="background: ${stage.color}">${stage.id}</div>
-          <div class="stage-info">
-            <div class="stage-name">${stage.name}</div>
-            <div class="stage-desc">${stage.description} (${completedCount}/${stage.letters.length})</div>
-          </div>
-        </div>
-        <div class="stage-letters" id="stage-${stage.id}-letters"></div>
-      `;
-
-      container.appendChild(stageCard);
-
-      // Render letter buttons for this stage
-      const lettersGrid = document.getElementById(`stage-${stage.id}-letters`);
-      stage.letters.forEach((letter, index) => {
-        const letterData = LessonData.letters[letter];
-        const isCompleted = progress[letter]?.completed;
-        const isUnlocked = isLetterUnlockedForLessons(letter, progress);
-
-        const btn = document.createElement('button');
-        btn.className = 'stage-letter-btn';
-        if (isCompleted) btn.classList.add('completed');
-        if (!isUnlocked) btn.classList.add('locked');
-
-        // Assign colors based on position
-        const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#AA96DA'];
-        btn.style.background = `linear-gradient(145deg, ${colors[index % colors.length]}, ${adjustColor(colors[index % colors.length], -20)})`;
-        btn.style.color = ['#FFE66D', '#95E1D3'].includes(colors[index % colors.length]) ? '#333' : '#fff';
-
-        btn.textContent = letter;
-
-        if (isUnlocked) {
-          btn.onclick = () => startLetterLesson(letter);
-        }
-
-        lettersGrid.appendChild(btn);
-      });
-    });
-  }
-
-  function isLetterUnlockedForLessons(letter, progress) {
-    const allLetters = LessonData.getAllLettersInOrder();
-    const index = allLetters.indexOf(letter);
-
-    // First letter is always unlocked
-    if (index === 0) return true;
-
-    // Unlock if previous letter is completed
-    const prevLetter = allLetters[index - 1];
-    return progress[prevLetter]?.completed === true;
-  }
-
-  function adjustColor(hex, amount) {
-    // Simple color adjustment for gradients
-    const num = parseInt(hex.replace('#', ''), 16);
-    const r = Math.max(0, Math.min(255, (num >> 16) + amount));
-    const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
-    const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
-    return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
-  }
-
-  function startLetterLesson(letter) {
-    if (typeof letterLesson !== 'undefined') {
-      const managers = {
-        audio: AudioManager,
-        ui: UIManager,
-        storage: StorageManager,
-        gameData: gameData
-      };
-      letterLesson.setManagers(managers);
-      letterLesson.start(letter);
-    } else {
-      console.error('LetterLesson not loaded');
-    }
-  }
-
-  function updateLessonProgress() {
-    // Update letter progress
-    const letterProgressFill = document.getElementById('letters-progress');
-    if (letterProgressFill && typeof LessonData !== 'undefined') {
-      const letterProgress = LetterLesson.getProgress();
-      const totalLetters = LessonData.getAllLettersInOrder().length;
-      const completedLetters = Object.keys(letterProgress).filter(l => letterProgress[l]?.completed).length;
-      const letterPercent = (completedLetters / totalLetters) * 100;
-      letterProgressFill.style.width = `${letterPercent}%`;
-    }
-
-    // Update syllable progress
-    const syllableProgressFill = document.getElementById('syllables-progress');
-    if (syllableProgressFill && typeof SyllableData !== 'undefined') {
-      const syllableProgress = SyllableLesson.getProgress();
-      const totalSyllables = SyllableData.getAllSyllablesInOrder().length;
-      const completedSyllables = Object.keys(syllableProgress).filter(s => syllableProgress[s]?.completed).length;
-      const syllablePercent = (completedSyllables / totalSyllables) * 100;
-      syllableProgressFill.style.width = `${syllablePercent}%`;
-    }
-  }
-
-  // =====================
-  // SYLLABLE LESSON NAVIGATION
-  // =====================
-
-  function showSyllableLessonSelect() {
-    renderSyllableStagesGrid();
-    showScreen('syllable-select-screen');
-  }
-
-  function renderSyllableStagesGrid() {
-    const container = document.getElementById('syllable-stages-container');
-    if (!container || typeof SyllableData === 'undefined') return;
-
-    const progress = SyllableLesson.getProgress();
-    container.innerHTML = '';
-
-    SyllableData.stages.forEach(stage => {
-      const stageCard = document.createElement('div');
-      stageCard.className = 'stage-card';
-
-      const completedCount = stage.syllables.filter(s => progress[s.syllable]?.completed).length;
-
-      stageCard.innerHTML = `
-        <div class="stage-header">
-          <div class="stage-number" style="background: ${stage.color}">${stage.id}</div>
-          <div class="stage-info">
-            <div class="stage-name">${stage.name}</div>
-            <div class="stage-desc">${stage.description} (${completedCount}/${stage.syllables.length})</div>
-          </div>
-        </div>
-        <div class="stage-letters" id="syllable-stage-${stage.id}"></div>
-      `;
-
-      container.appendChild(stageCard);
-
-      // Render syllable buttons
-      const syllablesGrid = document.getElementById(`syllable-stage-${stage.id}`);
-      stage.syllables.forEach((sylData, index) => {
-        const isCompleted = progress[sylData.syllable]?.completed;
-        const isUnlocked = isSyllableUnlockedForLessons(sylData.syllable, progress);
-
-        const btn = document.createElement('button');
-        btn.className = 'stage-letter-btn';
-        if (isCompleted) btn.classList.add('completed');
-        if (!isUnlocked) btn.classList.add('locked');
-
-        const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#AA96DA'];
-        btn.style.background = `linear-gradient(145deg, ${colors[index % colors.length]}, ${adjustColor(colors[index % colors.length], -20)})`;
-        btn.style.color = ['#FFE66D', '#95E1D3'].includes(colors[index % colors.length]) ? '#333' : '#fff';
-        btn.style.fontSize = '0.9rem';
-
-        btn.textContent = sylData.syllable.replace('-', '');
-
-        if (isUnlocked) {
-          btn.onclick = () => startSyllableLesson(sylData.syllable);
-        }
-
-        syllablesGrid.appendChild(btn);
-      });
-    });
-  }
-
-  function isSyllableUnlockedForLessons(syllable, progress) {
-    const allSyllables = SyllableData.getAllSyllablesInOrder();
-    const index = allSyllables.indexOf(syllable);
-
-    if (index === 0) return true;
-
-    const prevSyllable = allSyllables[index - 1];
-    return progress[prevSyllable]?.completed === true;
-  }
-
-  function startSyllableLesson(syllable) {
-    if (typeof syllableLesson !== 'undefined') {
-      const managers = {
-        audio: AudioManager,
-        ui: UIManager,
-        storage: StorageManager,
-        gameData: gameData
-      };
-      syllableLesson.setManagers(managers);
-      syllableLesson.start(syllable);
-    } else {
-      console.error('SyllableLesson not loaded');
     }
   }
 
@@ -493,66 +202,16 @@ const App = (function() {
     }
   }
 
-  function startBubbleGame() {
-    if (typeof bubbleGame !== 'undefined') {
-      bubbleGame.start();
-    } else {
-      console.error('BubbleGame not loaded');
-    }
-  }
-
-  function startDragDropGame() {
-    if (typeof dragDropGame !== 'undefined') {
-      dragDropGame.start();
-    } else {
-      console.error('DragDropGame not loaded');
-    }
-  }
-
-  function startTrainGame() {
-    if (typeof trainGame !== 'undefined') {
-      trainGame.start();
-    } else {
-      console.error('TrainGame not loaded');
-    }
-  }
-
-  function startBuildWordGame() {
-    if (typeof buildWordGame !== 'undefined') {
-      buildWordGame.start();
-    } else {
-      console.error('BuildWordGame not loaded');
-    }
-  }
-
-  function startSortingGame() {
-    if (typeof sortingGame !== 'undefined') {
-      sortingGame.start();
-    } else {
-      console.error('SortingGame not loaded');
-    }
-  }
-
-  function startPuzzleGame() {
-    if (typeof puzzleGame !== 'undefined') {
-      puzzleGame.start();
-    } else {
-      console.error('PuzzleGame not loaded');
-    }
-  }
-
   // =====================
   // SETTINGS
   // =====================
 
   function updateSettingsUI() {
-    // Show labels toggle
     const labelsToggle = document.getElementById('toggle-labels');
     if (labelsToggle) {
       labelsToggle.classList.toggle('active', settings.showLabels);
     }
 
-    // Number of choices
     document.querySelectorAll('.number-option').forEach(opt => {
       opt.classList.toggle('active', parseInt(opt.dataset.value) === settings.numChoices);
     });
@@ -597,7 +256,7 @@ const App = (function() {
 
       stickerEl.className = 'sticker-item' + (isUnlocked ? '' : ' locked');
       stickerEl.innerHTML = `
-        <span class="sticker-emoji">${isUnlocked ? sticker.emoji : '❓'}</span>
+        <span class="sticker-emoji">${isUnlocked ? sticker.emoji : '?'}</span>
         <span class="sticker-name">${isUnlocked ? sticker.name : '???'}</span>
       `;
 
@@ -608,7 +267,6 @@ const App = (function() {
       grid.appendChild(stickerEl);
     });
 
-    // Update count
     const countEl = document.getElementById('stickers-count');
     if (countEl) {
       countEl.textContent = `${unlocked.length} / ${Object.keys(definitions).length}`;
@@ -619,7 +277,6 @@ const App = (function() {
     const definitions = StorageManager.STICKER_DEFINITIONS;
     const newStickers = [];
 
-    // First star
     if (!StorageManager.isStickerUnlocked('firstStar')) {
       const totalStars = Object.values(progress).reduce((a, b) => a + b, 0);
       if (totalStars >= 1) {
@@ -628,7 +285,6 @@ const App = (function() {
       }
     }
 
-    // Perfect round (3 stars on a letter)
     if (!StorageManager.isStickerUnlocked('perfectRound') && gameType === 'phonics') {
       if (Object.values(progress).some(s => s >= 3)) {
         StorageManager.unlockSticker('perfectRound');
@@ -636,7 +292,6 @@ const App = (function() {
       }
     }
 
-    // Three star letter
     if (!StorageManager.isStickerUnlocked('threeStarLetter')) {
       if (Object.values(progress).some(s => s >= 3)) {
         StorageManager.unlockSticker('threeStarLetter');
@@ -644,7 +299,6 @@ const App = (function() {
       }
     }
 
-    // Five letters played
     if (!StorageManager.isStickerUnlocked('fiveLetters')) {
       if (Object.keys(progress).length >= 5) {
         StorageManager.unlockSticker('fiveLetters');
@@ -652,7 +306,6 @@ const App = (function() {
       }
     }
 
-    // Ten letters played
     if (!StorageManager.isStickerUnlocked('tenLetters')) {
       if (Object.keys(progress).length >= 10) {
         StorageManager.unlockSticker('tenLetters');
@@ -660,7 +313,6 @@ const App = (function() {
       }
     }
 
-    // Vocab stickers
     if (gameType === 'vocab') {
       const gamesPlayed = StorageManager.getVocabGamesPlayed();
 
@@ -675,7 +327,6 @@ const App = (function() {
       }
     }
 
-    // Explorer (tried both games)
     if (!StorageManager.isStickerUnlocked('explorer')) {
       const playedPhonics = Object.keys(progress).length > 0;
       const playedVocab = StorageManager.getVocabGamesPlayed() > 0;
@@ -685,7 +336,6 @@ const App = (function() {
       }
     }
 
-    // Dedicated (10 stars total)
     if (!StorageManager.isStickerUnlocked('dedicated')) {
       const totalStars = Object.values(progress).reduce((a, b) => a + b, 0);
       if (totalStars >= 10) {
@@ -694,7 +344,6 @@ const App = (function() {
       }
     }
 
-    // Superstar (20 stars total)
     if (!StorageManager.isStickerUnlocked('superstar')) {
       const totalStars = Object.values(progress).reduce((a, b) => a + b, 0);
       if (totalStars >= 20) {
@@ -703,7 +352,6 @@ const App = (function() {
       }
     }
 
-    // Champion (3 stars on 5 letters)
     if (!StorageManager.isStickerUnlocked('champion')) {
       const threeStarCount = Object.values(progress).filter(s => s >= 3).length;
       if (threeStarCount >= 5) {
@@ -712,7 +360,6 @@ const App = (function() {
       }
     }
 
-    // Master (3 stars on 10 letters)
     if (!StorageManager.isStickerUnlocked('master')) {
       const threeStarCount = Object.values(progress).filter(s => s >= 3).length;
       if (threeStarCount >= 10) {
@@ -721,7 +368,6 @@ const App = (function() {
       }
     }
 
-    // Show newly unlocked stickers
     if (newStickers.length > 0) {
       showNewStickerPopup(newStickers);
     }
@@ -735,7 +381,6 @@ const App = (function() {
 
     if (!popup || !emoji || !name || !desc) return;
 
-    // Show first sticker (queue others if multiple)
     const sticker = stickers[0];
     emoji.textContent = sticker.emoji;
     name.textContent = sticker.name;
@@ -744,10 +389,8 @@ const App = (function() {
     popup.classList.add('show');
     UIManager.createConfetti(15);
 
-    // Auto-hide after 3 seconds
     setTimeout(() => {
       popup.classList.remove('show');
-      // Show next sticker if there are more
       if (stickers.length > 1) {
         setTimeout(() => showNewStickerPopup(stickers.slice(1)), 500);
       }
@@ -760,7 +403,7 @@ const App = (function() {
   }
 
   // =====================
-  // ADDITIONAL FUNCTIONS FOR HTML COMPATIBILITY
+  // SETTINGS HELPERS
   // =====================
 
   function goBackFromSettings() {
@@ -782,7 +425,6 @@ const App = (function() {
     document.querySelectorAll('.difficulty-option').forEach(opt => {
       opt.classList.toggle('active', parseInt(opt.dataset.value) === level);
     });
-    // Update filtered letters based on difficulty
     if (gameData && gameData.letters) {
       const allLetters = Object.keys(gameData.letters);
       if (level === 1) {
@@ -792,7 +434,7 @@ const App = (function() {
       } else if (level === 3) {
         settings.filteredLetters = allLetters.slice(0, 18);
       } else {
-        settings.filteredLetters = null; // All letters
+        settings.filteredLetters = null;
       }
     }
     if (typeof phonicsGame !== 'undefined') {
@@ -820,60 +462,23 @@ const App = (function() {
     }
   }
 
-  function speakTrainWord() {
-    if (typeof trainGame !== 'undefined') {
-      trainGame.speakWord();
-    }
-  }
-
-  function speakBuildWord() {
-    if (typeof buildWordGame !== 'undefined') {
-      buildWordGame.speakWord();
-    }
-  }
-
-  function speakPuzzleWord() {
-    if (typeof puzzleGame !== 'undefined') {
-      puzzleGame.speakWord();
-    }
-  }
-
   // =====================
-  // LEGACY COMPATIBILITY
+  // WINDOW BINDINGS
   // =====================
 
-  // These functions maintain compatibility with existing onclick handlers in HTML
-
-  // Navigation
   window.showScreen = showScreen;
   window.showWelcome = showWelcome;
-  window.showGameSelect = showGameSelect;
   window.showLetterSelect = showLetterSelect;
-  window.showLetterSelection = showLetterSelect; // Alias
+  window.showLetterSelection = showLetterSelect;
   window.showSettings = showSettings;
   window.showStickers = showStickers;
-  window.showStickerBook = showStickers; // Alias
+  window.showStickerBook = showStickers;
   window.goBackFromSettings = goBackFromSettings;
 
-  // Lesson Navigation
-  window.switchMenuTab = switchMenuTab;
-  window.showLessonSelect = showLessonSelect;
-  window.startLetterLesson = startLetterLesson;
-  window.showSyllableLessonSelect = showSyllableLessonSelect;
-  window.startSyllableLesson = startSyllableLesson;
-
-  // Game launchers
   window.startGame = startPhonicsGame;
   window.startRandomPhonicsGame = startRandomPhonicsGame;
   window.showVocabGame = startVocabGame;
-  window.showBubbleGame = startBubbleGame;
-  window.showDragDropGame = startDragDropGame;
-  window.showTrainGame = startTrainGame;
-  window.showBuildWordGame = startBuildWordGame;
-  window.showSortingGame = startSortingGame;
-  window.showPuzzleGame = startPuzzleGame;
 
-  // Settings
   window.toggleShowLabels = toggleShowLabels;
   window.toggleSetting = toggleSetting;
   window.setNumChoices = setNumChoices;
@@ -881,52 +486,26 @@ const App = (function() {
   window.setDifficulty = setDifficulty;
   window.resetSettings = resetSettings;
 
-  // Audio playback
   window.playInstruction = playInstruction;
   window.playVocabWord = playVocabWord;
-  window.speakTrainWord = speakTrainWord;
-  window.speakBuildWord = speakBuildWord;
-  window.speakPuzzleWord = speakPuzzleWord;
 
-  // Stickers
   window.checkAndAwardStickers = checkAndAwardStickers;
   window.closeStickerPopup = closeStickerPopup;
-  window.hideNewStickerNotification = closeStickerPopup; // Alias
+  window.hideNewStickerNotification = closeStickerPopup;
 
-  // Sorting game answer
-  window.answerSorting = (answer) => {
-    if (typeof sortingGame !== 'undefined') {
-      sortingGame.answerSorting(answer);
-    }
-  };
-
-  // Public API
   return {
     init,
     showScreen,
     showWelcome,
-    showGameSelect,
     showLetterSelect,
     showSettings,
     showStickers,
     startPhonicsGame,
     startRandomPhonicsGame,
     startVocabGame,
-    startBubbleGame,
-    startDragDropGame,
-    startTrainGame,
-    startBuildWordGame,
-    startSortingGame,
-    startPuzzleGame,
     toggleShowLabels,
     setNumChoices,
     checkAndAwardStickers,
-    // Lesson functions
-    switchMenuTab,
-    showLessonSelect,
-    startLetterLesson,
-    showSyllableLessonSelect,
-    startSyllableLesson,
     getConfig: () => config,
     getGameData: () => gameData,
     getSettings: () => settings,
@@ -934,12 +513,10 @@ const App = (function() {
   };
 })();
 
-// Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
 });
 
-// Export for module systems
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = App;
 }

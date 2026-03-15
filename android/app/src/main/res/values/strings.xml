@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Софи и Криси</string>
+    <string name="title_activity_main">Софи и Криси</string>
+    <string name="package_name">com.bgtutor.sofikrisi</string>
+    <string name="custom_url_scheme">com.bgtutor.sofikrisi</string>
+</resources>
